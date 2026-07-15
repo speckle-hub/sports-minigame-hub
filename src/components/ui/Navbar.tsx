@@ -9,6 +9,7 @@ import { SoundToggle } from "./SoundToggle"
 const navLinks = [
   { to: "/", label: "Home" },
   { to: "/leaderboards", label: "Leaderboards" },
+  { to: "/achievements", label: "Achievements" },
 ]
 
 export function Navbar() {
