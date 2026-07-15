@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useGameStore } from "../../stores/gameStore"
 import { saveGameResult } from "../../lib/gameService"
+import { sfxCorrect, sfxIncorrect, sfxRoundComplete, sfxGameComplete } from "../../lib/sound"
 import { FOOTBALL_JEOPARDY_TILES, FOOTBALL_JEOPARDY_TILES_PER_SESSION } from "../../lib/constants"
 import { matchName } from "../../lib/utils"
 import { Input } from "../ui/Input"
@@ -59,6 +60,9 @@ export function FootballJeopardy() {
     if (isCorrect) {
       setScore((s) => s + tile.points)
       setSessionXp((x) => x + xp)
+      sfxCorrect()
+    } else {
+      sfxIncorrect()
     }
     setResults((r) => [...r, { tile, correct: isCorrect, xp }])
     setUsedIndices((u) => [...u, currentTile])
@@ -82,8 +86,10 @@ export function FootballJeopardy() {
     setAnswer("")
     if (results.length >= FOOTBALL_JEOPARDY_TILES_PER_SESSION) {
       setPhase("done")
+      sfxGameComplete()
     } else {
       setPhase("playing")
+      sfxRoundComplete()
     }
   }
 

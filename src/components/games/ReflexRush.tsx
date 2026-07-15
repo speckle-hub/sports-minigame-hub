@@ -4,6 +4,7 @@ import { useGameStore } from "../../stores/gameStore"
 import { calculateReflexXP } from "../../lib/utils"
 import { REFLEX_RUSH_ROUNDS } from "../../lib/constants"
 import { saveGameResult } from "../../lib/gameService"
+import { sfxCorrect, sfxGameComplete } from "../../lib/sound"
 
 type Phase = "ready" | "waiting" | "cue" | "result" | "done"
 
@@ -65,11 +66,14 @@ export function ReflexRush() {
       const newTimes = [...times, Math.round(reactionTime)]
       setTimes(newTimes)
       setCurrentTime(Math.round(reactionTime))
+      sfxCorrect()
 
       if (round + 1 >= REFLEX_RUSH_ROUNDS) {
         setPhase("done")
+        sfxGameComplete()
       } else {
         setPhase("result")
+        sfxCorrect()
       }
       return
     }

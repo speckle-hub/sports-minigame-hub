@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useGameStore } from "../../stores/gameStore"
 import { saveGameResult } from "../../lib/gameService"
+import { sfxCorrect, sfxIncorrect, sfxGameComplete } from "../../lib/sound"
 import { TIC_TAC_TOE_GRIDS, TIC_TAC_TOE_TIME_LIMIT } from "../../lib/constants"
 import { matchName } from "../../lib/utils"
 import { Input } from "../ui/Input"
@@ -127,6 +128,7 @@ export function TicTacToeGrid() {
       setFilled(newFilled)
       setScore((s) => s + 1)
       setMessage({ text: `Correct! +1`, type: "correct" })
+      sfxCorrect()
 
       if (mode === "classic" && checkWin(newFilled)) {
         setTimeout(() => {
@@ -134,11 +136,13 @@ export function TicTacToeGrid() {
           timerRef.current = null
           setFinalStatus("win")
           setPhase("done")
+          sfxGameComplete()
         }, 1200)
         return
       }
     } else {
       setMessage({ text: `Not in our list for this cell`, type: "wrong" })
+      sfxIncorrect()
     }
     setTimeout(() => {
       setMessage(null)

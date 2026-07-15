@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Card, CardTitle, CardHeader, CardContent } from "../components/ui/Card"
 import { cn, GAME_LABELS, GAME_IDS } from "../lib/utils"
 import { useLeaderboardStore } from "../stores/leaderboardStore"
+import { LeaderboardSkeleton } from "../components/ui/LeaderboardSkeleton"
+import { EmptyState } from "../components/ui/EmptyState"
 
 const games = [
   { id: "all", label: "All Games" },
@@ -96,13 +98,17 @@ export function Leaderboards() {
             </CardHeader>
             <CardContent>
               {isLoading ? (
-                <div className="flex items-center justify-center py-12">
-                  <div className="w-8 h-8 border-2 border-copper border-t-transparent rounded-full animate-spin" />
-                </div>
+                <LeaderboardSkeleton />
               ) : entries.length === 0 ? (
-                <p className="text-center py-12 text-text-muted">
-                  No entries yet. Be the first to play!
-                </p>
+                <EmptyState
+                  icon="🏟️"
+                  title="No Scores Yet"
+                  description={
+                    selectedGame === "all"
+                      ? "No one has played yet. Pick a game and be the first on the board!"
+                      : `No scores yet for ${games.find((g) => g.id === selectedGame)?.label || "this game"}. Be the first to make the list!`
+                  }
+                />
               ) : (
                 <AnimatePresence mode="wait">
                   <motion.div

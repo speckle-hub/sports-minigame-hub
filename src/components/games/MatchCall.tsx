@@ -4,6 +4,7 @@ import { saveGameResult } from "../../lib/gameService"
 import { calculateMatchCallXP, seededRandom } from "../../lib/utils"
 import { MATCH_CALL_SCENARIOS, MATCH_CALL_ROUNDS, MATCH_CALL_TIMER_MS } from "../../lib/constants"
 import type { MatchCallScenario } from "../../lib/constants"
+import { sfxGoal, sfxMiss, sfxRoundComplete, sfxGameComplete } from "../../lib/sound"
 
 type Phase = "ready" | "playing" | "round-result" | "done"
 
@@ -75,15 +76,18 @@ export function MatchCall() {
 
       if (correct) {
         setCorrectCount((c) => c + 1)
+        sfxGoal()
+      } else {
+        sfxMiss()
       }
       setTotalTime((t) => t + timeMs)
       setResults((r) => [...r, { correct, timeMs }])
 
       if (round + 1 >= MATCH_CALL_ROUNDS) {
-        setTimeout(() => setPhase("done"), 1500)
+        setTimeout(() => { setPhase("done"); sfxGameComplete() }, 1500)
       } else {
         setTimeout(() => {
-          setPhase("round-result")
+          setPhase("round-result"); sfxRoundComplete()
         }, 1500)
       }
     },
@@ -99,12 +103,13 @@ export function MatchCall() {
     setTimeLeft(0)
     setTotalTime((t) => t + Math.round(elapsed))
     setResults((r) => [...r, { correct: false, timeMs: Math.round(elapsed) }])
+    sfxMiss()
 
     if (round + 1 >= MATCH_CALL_ROUNDS) {
-      setTimeout(() => setPhase("done"), 1500)
+      setTimeout(() => { setPhase("done"); sfxGameComplete() }, 1500)
     } else {
       setTimeout(() => {
-        setPhase("round-result")
+        setPhase("round-result"); sfxRoundComplete()
       }, 1500)
     }
   }, [round])

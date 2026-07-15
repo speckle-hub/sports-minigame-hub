@@ -7,6 +7,8 @@ import { StreakBadge } from "../components/ui/StreakBadge"
 import { XPBar } from "../components/ui/XPBar"
 import { Button } from "../components/ui/Button"
 import { EditProfileModal } from "../components/EditProfileModal"
+import { ProfileSkeleton } from "../components/ui/ProfileSkeleton"
+import { EmptyState } from "../components/ui/EmptyState"
 import { useAuthStore } from "../stores/authStore"
 import { calculateLevel, GAME_LABELS, GAME_IDS, avatarGradientClasses } from "../lib/utils"
 
@@ -20,35 +22,30 @@ export function Profile() {
     !username
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen pt-24 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 border-2 border-copper border-t-transparent rounded-full animate-spin" />
-          <p className="text-sm text-text-muted">Loading profile...</p>
-        </div>
-      </div>
-    )
+    return <ProfileSkeleton />
   }
 
   if (!profile) {
     return (
       <div className="min-h-screen pt-24 flex items-center justify-center">
-        <Card className="text-center">
-          <CardContent>
-            <p className="text-text-muted">
-              {isOwn
-                ? "Sign in to see your profile."
-                : "Player not found."}
-            </p>
-            {isOwn && (
+        {isOwn ? (
+          <EmptyState
+            icon="👤"
+            title="Not Signed In"
+            description="Sign in to track your XP, streaks, and scores across all games."
+            action={
               <Link to="/login">
-                <Button variant="primary" className="mt-4">
-                  Sign In
-                </Button>
+                <Button variant="primary">Sign In</Button>
               </Link>
-            )}
-          </CardContent>
-        </Card>
+            }
+          />
+        ) : (
+          <EmptyState
+            icon="🔍"
+            title="Player Not Found"
+            description="This username doesn't exist or the player hasn't set up their profile yet."
+          />
+        )}
       </div>
     )
   }
@@ -189,9 +186,11 @@ export function Profile() {
                   ))}
                 </div>
               ) : (
-                <p className="text-sm text-text-muted">
-                  Earn cosmetics by leveling up and completing challenges.
-                </p>
+                <EmptyState
+                  icon="🎨"
+                  title="No Cosmetics Yet"
+                  description="Earn cosmetics by leveling up, hitting streak milestones, and completing achievements."
+                />
               )}
             </CardContent>
           </Card>

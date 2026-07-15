@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { calculateTacticsXP, seededRandom } from "../../lib/utils"
 import { TACTICS_MAX_GUESSES, TACTICS_DAILY_PUZZLES } from "../../lib/constants"
 import { saveTacticsDailyResult } from "../../lib/gameService"
+import { sfxCorrect, sfxIncorrect, sfxGameComplete } from "../../lib/sound"
 
 const EMOJI_MAP = {
   correct: "🟩",
@@ -48,6 +49,8 @@ export function TacticsDaily() {
       if (value === puzzle.answer) {
         setIsComplete(true)
         setWon(true)
+        sfxCorrect()
+        setTimeout(() => sfxGameComplete(), 400)
         const xp = calculateTacticsXP(newGuesses.length)
         saveTacticsDailyResult({
           gameId: "tactics-daily",
@@ -55,19 +58,23 @@ export function TacticsDaily() {
           details: { won: "true", guesses: newGuesses.length },
           xpEarned: xp,
         })
-      } else if (newGuesses.length >= TACTICS_MAX_GUESSES) {
-        setIsComplete(true)
-        setWon(false)
-        saveTacticsDailyResult({
-          gameId: "tactics-daily",
-          score: TACTICS_MAX_GUESSES,
-          details: {
-            won: "false",
-            guesses: newGuesses.length,
-            answer: puzzle.answer,
-          },
-          xpEarned: 0,
-        })
+      } else {
+        sfxIncorrect()
+        if (newGuesses.length >= TACTICS_MAX_GUESSES) {
+          setIsComplete(true)
+          setWon(false)
+          setTimeout(() => sfxGameComplete(), 400)
+          saveTacticsDailyResult({
+            gameId: "tactics-daily",
+            score: TACTICS_MAX_GUESSES,
+            details: {
+              won: "false",
+              guesses: newGuesses.length,
+              answer: puzzle.answer,
+            },
+            xpEarned: 0,
+          })
+        }
       }
     },
     [guesses, isComplete, puzzle]

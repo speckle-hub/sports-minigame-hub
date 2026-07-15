@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react"
 import { motion } from "framer-motion"
 import { useGameStore } from "../../stores/gameStore"
 import { saveGameResult } from "../../lib/gameService"
+import { sfxCorrect, sfxIncorrect, sfxGameComplete } from "../../lib/sound"
 import { FOOTBALL_AZ_LETTERS, FOOTBALL_AZ_TIME_LIMIT, FOOTBALL_AZ_LETTERS_PER_GAME } from "../../lib/constants"
 import { matchName } from "../../lib/utils"
 import { Input } from "../ui/Input"
@@ -91,6 +92,7 @@ export function FootballAZ() {
           if (timerRef.current) clearInterval(timerRef.current)
           timerRef.current = null
           setPhase("done")
+          sfxGameComplete()
           return 0
         }
         return prev - 1
@@ -104,9 +106,11 @@ export function FootballAZ() {
     if (isCorrect) {
       setCorrect((c) => [...c, currentLetter])
       setMessage({ text: `Correct! ${guess.trim()}`, type: "correct" })
+      sfxCorrect()
     } else {
       setWrong((w) => [...w, currentLetter])
       setMessage({ text: `No match for "${currentLetter}"`, type: "wrong" })
+      sfxIncorrect()
     }
     setGuess("")
     setTimeout(() => {

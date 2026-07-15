@@ -2,6 +2,7 @@ import { useState, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useGameStore } from "../../stores/gameStore"
 import { saveGameResult } from "../../lib/gameService"
+import { sfxCorrect, sfxRoundComplete, sfxGameComplete } from "../../lib/sound"
 import { TRIVIA_PATH_QUESTIONS, TRIVIA_PATH_TILES_PER_SESSION } from "../../lib/constants"
 import type { TriviaPathQuestion } from "../../lib/constants"
 
@@ -48,6 +49,7 @@ export function TriviaPath() {
     if (correct) {
       setCorrectCount((c) => c + 1)
       setTotalXp((t) => t + xp)
+      sfxCorrect()
     }
     setResults((r) => [...r, { correct, xp }])
     setPhase("result")
@@ -58,6 +60,7 @@ export function TriviaPath() {
     setStepXp(0)
     if (step + 1 >= TRIVIA_PATH_TILES_PER_SESSION) {
       setPhase("done")
+      sfxGameComplete()
       if (!savedRef.current) {
         savedRef.current = true
         saveGameResult({
@@ -70,6 +73,7 @@ export function TriviaPath() {
     } else {
       setStep((s) => s + 1)
       setPhase("playing")
+      sfxRoundComplete()
     }
   }
 

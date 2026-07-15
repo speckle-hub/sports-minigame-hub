@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useGameStore } from "../../stores/gameStore"
 import { saveGameResult } from "../../lib/gameService"
+import { sfxCorrect, sfxIncorrect, sfxRoundComplete, sfxGameComplete } from "../../lib/sound"
 import {
   TRUE_FALSE_ROUNDS,
   TRUE_FALSE_TIMER_MS,
@@ -93,6 +94,9 @@ export function TrueFalse() {
     if (correct) {
       setCorrectCount((c) => c + 1)
       setTotalXp((t) => t + xp)
+      sfxCorrect()
+    } else {
+      sfxIncorrect()
     }
     setResults((r) => [...r, { correct, xp }])
     setPhase("result")
@@ -101,10 +105,12 @@ export function TrueFalse() {
   function handleNext() {
     if (round + 1 >= TRUE_FALSE_ROUNDS) {
       setPhase("done")
+      sfxGameComplete()
     } else {
       setRound((r) => r + 1)
       setPhase("playing")
       startTimer()
+      sfxRoundComplete()
     }
   }
 

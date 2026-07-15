@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { cn } from "../../lib/utils"
 import { useAuthStore } from "../../stores/authStore"
 import { calculateLevel } from "../../lib/utils"
+import { SoundToggle } from "./SoundToggle"
 
 const navLinks = [
   { to: "/", label: "Home" },
@@ -53,6 +54,7 @@ export function Navbar() {
         </div>
 
         <div className="hidden md:flex items-center gap-3">
+          <SoundToggle />
           {isGuest ? (
             <Link
               to="/login"
@@ -117,7 +119,8 @@ export function Navbar() {
                   {link.label}
                 </Link>
               ))}
-              <div className="border-t border-border pt-2 mt-2">
+              <div className="flex items-center justify-between border-t border-border pt-2 mt-2 px-4">
+                <SoundToggle />
                 {isGuest ? (
                   <Link
                     to="/login"

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useGameStore } from "../../stores/gameStore"
 import { saveGameResult } from "../../lib/gameService"
+import { sfxCorrect, sfxIncorrect, sfxRoundComplete, sfxGameComplete } from "../../lib/sound"
 import { CAREER_PATH_PLAYERS, CAREER_PATH_ROUNDS, CAREER_PATH_MAX_CLUBS } from "../../lib/constants"
 import { matchName } from "../../lib/utils"
 import { Input } from "../ui/Input"
@@ -85,8 +86,10 @@ export function CareerPath() {
       setTotalXp((t) => t + xp)
       setRoundResult({ correct: true, xp, clubsRevealed })
       setResults((r) => [...r, { correct: true, clubsRevealed, xp }])
+      sfxCorrect()
       setPhase("round-result")
     } else {
+      sfxIncorrect()
       if (clubsRevealed >= current.clubs.length || clubsRevealed >= CAREER_PATH_MAX_CLUBS) {
         setRoundResult({ correct: false, xp: 0, clubsRevealed })
         setResults((r) => [...r, { correct: false, clubsRevealed, xp: 0 }])
@@ -115,10 +118,12 @@ export function CareerPath() {
     setRoundResult(null)
     if (round + 1 >= CAREER_PATH_ROUNDS) {
       setPhase("done")
+      sfxGameComplete()
     } else {
       setRound((r) => r + 1)
       setClubsRevealed(1)
       setPhase("playing")
+      sfxRoundComplete()
     }
   }
 

@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { Navbar } from "./components/ui/Navbar"
 import { AuthProvider } from "./components/AuthProvider"
+import { MilestoneWatcher } from "./components/MilestoneWatcher"
 import { Home } from "./pages/Home"
 import { Login } from "./pages/Login"
 import { Signup } from "./pages/Signup"
@@ -20,6 +21,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <MilestoneWatcher />
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
