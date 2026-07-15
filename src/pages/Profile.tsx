@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
 import { motion } from "framer-motion"
 import { Card, CardTitle, CardHeader, CardContent } from "../components/ui/Card"
@@ -10,19 +10,61 @@ import { EditProfileModal } from "../components/EditProfileModal"
 import { ProfileSkeleton } from "../components/ui/ProfileSkeleton"
 import { EmptyState } from "../components/ui/EmptyState"
 import { useAuthStore } from "../stores/authStore"
+import { useFriendStore } from "../stores/friendStore"
+import { supabase } from "../lib/supabase"
 import { calculateLevel, GAME_LABELS, GAME_IDS, avatarGradientClasses } from "../lib/utils"
 import { ALL_COSMETICS, isUnlocked } from "../lib/cosmetics"
+import type { Profile } from "../stores/authStore"
 
 export function Profile() {
   const { username } = useParams<{ username: string }>()
-  const { profile, isLoading } = useAuthStore()
+  const { profile: ownProfile, isLoading: ownLoading, user } = useAuthStore()
+  const { isFollowing, followUser, unfollowUser, loadFollowing } = useFriendStore()
   const [editOpen, setEditOpen] = useState(false)
+  const [viewedProfile, setViewedProfile] = useState<Profile | null>(null)
+  const [viewedLoading, setViewedLoading] = useState(false)
+
+  const [followActionLoading, setFollowActionLoading] = useState(false)
+
   const isOwn =
     username === "me" ||
-    username === profile?.username ||
+    username === ownProfile?.username ||
     !username
 
-  if (isLoading) {
+  // Load own profile's following list
+  useEffect(() => {
+    if (user) loadFollowing()
+  }, [user, loadFollowing])
+
+  // Fetch another user's profile when viewing their page
+  useEffect(() => {
+    if (isOwn || !username) return
+
+    let cancelled = false
+    setViewedLoading(true)
+
+    supabase
+      .from("profiles")
+      .select("*")
+      .eq("username", username)
+      .maybeSingle()
+      .then(({ data, error }) => {
+        if (cancelled) return
+        setViewedLoading(false)
+        if (!error && data) {
+          setViewedProfile(data as unknown as Profile)
+        } else {
+          setViewedProfile(null)
+        }
+      })
+
+    return () => { cancelled = true }
+  }, [username, isOwn])
+
+  const profile = isOwn ? ownProfile : viewedProfile
+  const loading = isOwn ? ownLoading : viewedLoading
+
+  if (loading) {
     return <ProfileSkeleton />
   }
 
@@ -52,6 +94,19 @@ export function Profile() {
   }
 
   const level = calculateLevel(profile.total_xp)
+  const viewingOther = !isOwn && !!user
+  const following = viewingOther && isFollowing(profile!.username)
+
+  async function handleFollowToggle() {
+    if (!viewingOther || !profile!.id) return
+    setFollowActionLoading(true)
+    if (following) {
+      await unfollowUser(profile!.id)
+    } else {
+      await followUser(profile!.id)
+    }
+    setFollowActionLoading(false)
+  }
 
   return (
     <div className="min-h-screen pt-24">
@@ -89,11 +144,23 @@ export function Profile() {
                   </p>
                 </div>
 
-                {isOwn && (
-                  <Button variant="secondary" size="sm" onClick={() => setEditOpen(true)}>
-                    Edit Profile
-                  </Button>
-                )}
+                <div className="flex items-center gap-2">
+                  {isOwn && (
+                    <Button variant="secondary" size="sm" onClick={() => setEditOpen(true)}>
+                      Edit Profile
+                    </Button>
+                  )}
+                  {viewingOther && (
+                    <Button
+                      variant={following ? "secondary" : "primary"}
+                      size="sm"
+                      onClick={handleFollowToggle}
+                      isLoading={followActionLoading}
+                    >
+                      {following ? "Following" : "Follow"}
+                    </Button>
+                  )}
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -138,12 +205,17 @@ export function Profile() {
                       </div>
                       <div>
                         <p className="text-sm font-medium text-text">{label}</p>
-                        <Link
-                          to={`/play/${id}`}
-                          className="text-xs text-copper hover:underline"
-                        >
-                          Play
-                        </Link>
+                        {!isOwn && (
+                          <span className="text-xs text-text-muted">{profile.best_scores?.[id] != null ? "Best" : "No score"}</span>
+                        )}
+                        {isOwn && (
+                          <Link
+                            to={`/play/${id}`}
+                            className="text-xs text-copper hover:underline"
+                          >
+                            Play
+                          </Link>
+                        )}
                       </div>
                     </div>
                     <span className="text-lg font-heading font-bold text-copper">

@@ -1,5 +1,6 @@
 import { create } from "zustand"
 import { supabase } from "../lib/supabase"
+import { useAuthStore } from "./authStore"
 
 export interface LeaderboardEntry {
   rank: number
@@ -46,10 +47,29 @@ export const useLeaderboardStore = create<LeaderboardState>((set, get) => ({
   setGame: (game) => set({ game }),
   setPeriod: (period) => set({ period }),
   fetchEntries: async () => {
-    const { game, period } = get()
+    const { game, period, filter } = get()
     set({ isLoading: true })
 
     try {
+      // Collect followed usernames if friends filter
+      let followedUsernames: Set<string> | null = null
+      if (filter === "friends") {
+        const user = useAuthStore.getState().user
+        if (user) {
+          const { data } = await supabase
+            .from("follows")
+            .select("profiles!inner(username)")
+            .eq("follower_id", user.id)
+          followedUsernames = new Set(
+            (data || []).map((r: any) => r.profiles?.username).filter(Boolean)
+          )
+        }
+        if (!followedUsernames || followedUsernames.size === 0) {
+          set({ entries: [], isLoading: false })
+          return
+        }
+      }
+
       if (game === "all" && period === "all-time") {
         const { data, error } = await supabase
           .from("profiles")
@@ -59,14 +79,19 @@ export const useLeaderboardStore = create<LeaderboardState>((set, get) => ({
 
         if (error) throw error
 
-        const entries: LeaderboardEntry[] = (data || []).map((p, i) => ({
+        let entries: LeaderboardEntry[] = (data || []).map((p, i) => ({
           rank: i + 1,
           username: p.username,
           avatar_url: p.avatar_url,
           score: p.total_xp,
           xp: p.total_xp,
-          isFriend: false,
+          isFriend: followedUsernames?.has(p.username) ?? false,
         }))
+
+        if (followedUsernames) {
+          entries = entries.filter((e) => followedUsernames!.has(e.username))
+          entries = entries.map((e, i) => ({ ...e, rank: i + 1 }))
+        }
 
         set({ entries, isLoading: false })
         return
@@ -91,7 +116,7 @@ export const useLeaderboardStore = create<LeaderboardState>((set, get) => ({
           userMap.set(key, existing)
         }
 
-        const entries: LeaderboardEntry[] = Array.from(userMap.values())
+        let entries: LeaderboardEntry[] = Array.from(userMap.values())
           .sort((a, b) => b.xp - a.xp)
           .slice(0, 100)
           .map((p, i) => ({
@@ -100,8 +125,13 @@ export const useLeaderboardStore = create<LeaderboardState>((set, get) => ({
             avatar_url: p.avatar_url,
             score: p.xp,
             xp: p.xp,
-            isFriend: false,
+            isFriend: followedUsernames?.has(p.username) ?? false,
           }))
+
+        if (followedUsernames) {
+          entries = entries.filter((e) => followedUsernames!.has(e.username))
+          entries = entries.map((e, i) => ({ ...e, rank: i + 1 }))
+        }
 
         set({ entries, isLoading: false })
         return
@@ -135,7 +165,7 @@ export const useLeaderboardStore = create<LeaderboardState>((set, get) => ({
         userMap.set(key, existing)
       }
 
-      const entries: LeaderboardEntry[] = Array.from(userMap.values())
+      let entries: LeaderboardEntry[] = Array.from(userMap.values())
         .sort((a, b) => b.bestScore - a.bestScore)
         .slice(0, 100)
         .map((p, i) => ({
@@ -144,8 +174,13 @@ export const useLeaderboardStore = create<LeaderboardState>((set, get) => ({
           avatar_url: p.avatar_url,
           score: p.bestScore,
           xp: p.totalXp,
-          isFriend: false,
+          isFriend: followedUsernames?.has(p.username) ?? false,
         }))
+
+      if (followedUsernames) {
+        entries = entries.filter((e) => followedUsernames!.has(e.username))
+        entries = entries.map((e, i) => ({ ...e, rank: i + 1 }))
+      }
 
       set({ entries, isLoading: false })
     } catch (error) {

@@ -89,3 +89,24 @@ CREATE POLICY "daily_challenges_select"
   ON daily_challenges FOR SELECT USING (auth.uid() = user_id);
 CREATE POLICY "daily_challenges_insert"
   ON daily_challenges FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+-- 7. FOLLOWS (one-sided)
+CREATE TABLE follows (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  follower_id UUID REFERENCES profiles(id) ON DELETE CASCADE NOT NULL,
+  following_id UUID REFERENCES profiles(id) ON DELETE CASCADE NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(follower_id, following_id)
+);
+
+CREATE INDEX idx_follows_follower ON follows(follower_id);
+CREATE INDEX idx_follows_following ON follows(following_id);
+
+ALTER TABLE follows ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "follows_select"
+  ON follows FOR SELECT USING (true);
+CREATE POLICY "follows_insert"
+  ON follows FOR INSERT WITH CHECK (auth.uid() = follower_id);
+CREATE POLICY "follows_delete"
+  ON follows FOR DELETE USING (auth.uid() = follower_id);
