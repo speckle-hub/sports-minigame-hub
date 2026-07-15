@@ -178,22 +178,30 @@ export function Leaderboards() {
                   )}
                   {searchResults.length > 0 && (
                     <div className="mt-2 space-y-1 max-h-60 overflow-y-auto">
-                      {searchResults.map((r) => (
-                        <button
-                          key={r.username}
-                          onClick={() => navigate(`/profile/${r.username}`)}
-                          className="w-full flex items-center gap-3 p-3 rounded-lg bg-surface-2 hover:bg-surface-3 transition-colors text-left"
-                        >
-                          <div className="w-8 h-8 rounded-full bg-surface-3 flex items-center justify-center text-xs font-heading font-bold text-text">
-                            {r.username[0]}
-                          </div>
-                          <div className="flex-1">
-                            <p className="text-sm font-medium text-text">{r.username}</p>
-                            <p className="text-xs text-text-muted">Lv.{Math.floor(Math.sqrt(r.total_xp / 100))} · {r.total_xp.toLocaleString()} XP</p>
-                          </div>
-                          <span className="text-xs text-copper">View →</span>
-                        </button>
-                      ))}
+                      {searchResults.map((r) => {
+                        const isFriend = useFriendStore.getState().isFollowing(r.username)
+                        return (
+                          <button
+                            key={r.username}
+                            onClick={() => navigate(`/profile/${r.username}`)}
+                            className="w-full flex items-center gap-3 p-3 rounded-lg bg-surface-2 hover:bg-surface-3 transition-colors text-left"
+                          >
+                            <div className="w-8 h-8 rounded-full bg-surface-3 flex items-center justify-center text-xs font-heading font-bold text-text">
+                              {r.username[0]}
+                            </div>
+                            <div className="flex-1">
+                              <p className="text-sm font-medium text-text flex items-center gap-2">
+                                {r.username}
+                                {isFriend && (
+                                  <span className="text-[10px] text-copper font-heading font-bold">●</span>
+                                )}
+                              </p>
+                              <p className="text-xs text-text-muted">Lv.{Math.floor(Math.sqrt(r.total_xp / 100))} · {r.total_xp.toLocaleString()} XP</p>
+                            </div>
+                            <span className="text-xs text-copper">View →</span>
+                          </button>
+                        )
+                      })}
                     </div>
                   )}
                   {searchQuery.trim() && !searching && searchResults.length === 0 && (

@@ -34,7 +34,7 @@ export function MilestoneWatcher() {
       checkAndUnlockCosmetics(userId, profile).catch(console.error)
     }, 500)
     return () => clearTimeout(timer)
-  }, [userId, profile?.total_xp, profile?.current_streak, profile?.longest_streak])
+  }, [profile, userId, profile?.total_xp, profile?.current_streak, profile?.longest_streak])
 
   return null
 }

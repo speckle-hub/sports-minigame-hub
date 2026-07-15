@@ -85,7 +85,7 @@ export function ReflexRush() {
         nextRound()
       }
     }
-  }, [phase, startRound, nextRound, times, round, cleanup, falseStart])
+  }, [phase, startRound, nextRound, times, round, cleanup, falseStart, setIsPlaying])
 
   useEffect(() => {
     if (phase === "ready") {

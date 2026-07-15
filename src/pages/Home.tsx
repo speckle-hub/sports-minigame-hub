@@ -122,7 +122,7 @@ export function Home() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
           >
-            Three games. One legacy. Play, earn XP, climb the leaderboard.
+            Nine games. One legacy. Play, earn XP, climb the leaderboard.
           </motion.p>
 
           <motion.div
@@ -170,7 +170,7 @@ export function Home() {
                   value={`${profile.longest_streak} days`}
                 />
                 <StatCard label="Level" value={level} />
-                <StatCard label="Games Played" value="0" />
+                <StatCard label="Games Played" value={Object.keys(profile.best_scores || {}).length} />
               </div>
             </Card>
           </motion.section>

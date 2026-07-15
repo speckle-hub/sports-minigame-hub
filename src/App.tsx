@@ -17,6 +17,7 @@ import { FootballAZPage } from "./pages/FootballAZPage"
 import { FootballJeopardyPage } from "./pages/FootballJeopardyPage"
 import { TriviaPathPage } from "./pages/TriviaPathPage"
 import { TicTacToeGridPage } from "./pages/TicTacToeGridPage"
+import { NotFound } from "./pages/NotFound"
 
 export default function App() {
   return (
@@ -40,6 +41,7 @@ export default function App() {
           <Route path="/play/football-jeopardy" element={<FootballJeopardyPage />} />
           <Route path="/play/trivia-path" element={<TriviaPathPage />} />
           <Route path="/play/tic-tac-toe-grid" element={<TicTacToeGridPage />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

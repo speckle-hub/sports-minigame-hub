@@ -79,7 +79,7 @@ export function FootballJeopardy() {
         xpEarned: sessionXp,
       })
     }
-  }, [phase, score, results.length, sessionXp])
+  }, [phase, score, results, sessionXp])
 
   function handleNext() {
     setCurrentTile(null)

@@ -25,6 +25,7 @@ export function Profile() {
   const [viewedLoading, setViewedLoading] = useState(false)
 
   const [followActionLoading, setFollowActionLoading] = useState(false)
+  const [followError, setFollowError] = useState<string | null>(null)
 
   const isOwn =
     username === "me" ||
@@ -100,10 +101,12 @@ export function Profile() {
   async function handleFollowToggle() {
     if (!viewingOther || !profile!.id) return
     setFollowActionLoading(true)
-    if (following) {
-      await unfollowUser(profile!.id)
-    } else {
-      await followUser(profile!.id)
+    setFollowError(null)
+    const result = following
+      ? await unfollowUser(profile!.id)
+      : await followUser(profile!.id)
+    if (result.error) {
+      setFollowError(result.error)
     }
     setFollowActionLoading(false)
   }
@@ -144,21 +147,26 @@ export function Profile() {
                   </p>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  {isOwn && (
-                    <Button variant="secondary" size="sm" onClick={() => setEditOpen(true)}>
-                      Edit Profile
-                    </Button>
-                  )}
-                  {viewingOther && (
-                    <Button
-                      variant={following ? "secondary" : "primary"}
-                      size="sm"
-                      onClick={handleFollowToggle}
-                      isLoading={followActionLoading}
-                    >
-                      {following ? "Following" : "Follow"}
-                    </Button>
+                <div className="flex flex-col items-end gap-1">
+                  <div className="flex items-center gap-2">
+                    {isOwn && (
+                      <Button variant="secondary" size="sm" onClick={() => setEditOpen(true)}>
+                        Edit Profile
+                      </Button>
+                    )}
+                    {viewingOther && (
+                      <Button
+                        variant={following ? "secondary" : "primary"}
+                        size="sm"
+                        onClick={handleFollowToggle}
+                        isLoading={followActionLoading}
+                      >
+                        {following ? "Following" : "Follow"}
+                      </Button>
+                    )}
+                  </div>
+                  {followError && (
+                    <p className="text-[11px] text-danger">{followError}</p>
                   )}
                 </div>
               </div>

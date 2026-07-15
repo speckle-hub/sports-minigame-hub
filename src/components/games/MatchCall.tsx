@@ -136,8 +136,11 @@ export function MatchCall() {
     setTimeLeft(MATCH_CALL_TIMER_MS)
   }, [])
 
+  const savedRef = useRef(false)
+
   useEffect(() => {
-    if (phase === "done") {
+    if (phase === "done" && !savedRef.current) {
+      savedRef.current = true
       const avgTime = results.length > 0 ? Math.floor(totalTime / results.length) : MATCH_CALL_TIMER_MS
       const xp = calculateMatchCallXP(correctCount, MATCH_CALL_ROUNDS, avgTime)
       saveGameResult({
@@ -151,7 +154,10 @@ export function MatchCall() {
         xpEarned: xp,
       })
     }
-  }, [phase])
+    if (phase !== "done") {
+      savedRef.current = false
+    }
+  }, [phase, results.length, totalTime, correctCount])
 
   const current = scenarios[round]
   const timerPct = timeLeft / MATCH_CALL_TIMER_MS

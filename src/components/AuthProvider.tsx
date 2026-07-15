@@ -39,7 +39,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => {
       subscription.unsubscribe()
     }
-  }, [])
+  }, [setUser, setProfile, setIsLoading, loadProfile])
 
   return <>{children}</>
 }
