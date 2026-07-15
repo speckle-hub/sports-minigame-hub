@@ -150,6 +150,16 @@ export function Leaderboards() {
             </div>
           </div>
 
+          {selectedPeriod === "weekly" && (
+            <div className="mb-6 p-3 rounded-lg bg-surface-2 border border-border flex items-center gap-3">
+              <span className="text-lg">📅</span>
+              <div>
+                <p className="text-sm font-medium text-text">Weekly Rankings</p>
+                <p className="text-xs text-text-muted">Fresh leaderboard — resets every Monday</p>
+              </div>
+            </div>
+          )}
+
           {/* Search bar */}
           <div className="mb-6">
             <button

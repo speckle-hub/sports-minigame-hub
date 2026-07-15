@@ -3,6 +3,7 @@ import { useAuthStore } from "../stores/authStore"
 import { useGameStore } from "../stores/gameStore"
 import { checkAndUnlockCosmetics } from "./unlockCosmetics"
 import { useChallengeStore } from "../stores/challengeStore"
+import type { Profile } from "../stores/authStore"
 
 const GUEST_STORAGE_KEY = "sports-hub-guest-results"
 
@@ -139,7 +140,7 @@ export async function saveGameResult(result: GameResultPayload) {
 
   // Check and unlock cosmetics (pass updated XP)
   const updatedProfile = profile ? { ...profile, total_xp: newTotalXp } : profile
-  checkAndUnlockCosmetics(user.id, updatedProfile as any, {
+  checkAndUnlockCosmetics(user.id, updatedProfile as Profile, {
     gameId: result.gameId,
     score: result.score,
     details: result.details,

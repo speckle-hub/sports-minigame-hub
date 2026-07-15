@@ -1,6 +1,7 @@
 import { create } from "zustand"
 import { supabase } from "../lib/supabase"
 import { useAuthStore } from "./authStore"
+import { GAME_LABELS } from "../lib/utils"
 
 export interface Challenge {
   id: string
@@ -99,6 +100,18 @@ export const useChallengeStore = create<ChallengeState>((set, get) => ({
 
     if (error) return { error: error.message }
 
+    const gameLabel = GAME_LABELS[gameId as keyof typeof GAME_LABELS] || gameId
+    const challengerName = useAuthStore.getState().profile?.username || "Someone"
+    setTimeout(() => {
+      supabase.from("notifications").insert({
+        user_id: challengedId,
+        type: "challenge_received",
+        title: "New Challenge!",
+        body: `${challengerName} challenged you on ${gameLabel} — beat their score of ${challengerScore} to win`,
+        link: "/challenges",
+      }).then()
+    }, 0)
+
     await get().loadChallenges()
     return { error: null }
   },
@@ -113,6 +126,10 @@ export const useChallengeStore = create<ChallengeState>((set, get) => ({
 
     if (!pending || pending.length === 0) return
 
+    const gameLabel = GAME_LABELS[gameId as keyof typeof GAME_LABELS] || gameId
+    const profile = useAuthStore.getState().profile
+    const myName = profile?.username || "Someone"
+
     for (const challenge of pending) {
       const beat = isBeat(challenge.challenger_score, newScore, gameId)
       const winnerId = beat ? userId : challenge.challenger_id
@@ -126,6 +143,45 @@ export const useChallengeStore = create<ChallengeState>((set, get) => ({
           completed_at: new Date().toISOString(),
         })
         .eq("id", challenge.id)
+
+      // Notify both players
+      setTimeout(() => {
+        if (beat) {
+          supabase.from("notifications").insert([
+            {
+              user_id: userId,
+              type: "challenge_result",
+              title: "You won!",
+              body: `You beat ${challenge.challenger_username || "your opponent"} on ${gameLabel}!`,
+              link: "/challenges",
+            },
+            {
+              user_id: challenge.challenger_id,
+              type: "challenge_result",
+              title: "Challenge lost",
+              body: `${myName} beat your ${gameLabel} challenge`,
+              link: "/challenges",
+            },
+          ]).then()
+        } else {
+          supabase.from("notifications").insert([
+            {
+              user_id: userId,
+              type: "challenge_result",
+              title: "Challenge lost",
+              body: `You couldn't beat ${challenge.challenger_username || "your opponent"}'s ${gameLabel} score`,
+              link: "/challenges",
+            },
+            {
+              user_id: challenge.challenger_id,
+              type: "challenge_result",
+              title: "You won!",
+              body: `${myName} couldn't beat your ${gameLabel} challenge`,
+              link: "/challenges",
+            },
+          ]).then()
+        }
+      }, 0)
     }
 
     await get().loadChallenges()

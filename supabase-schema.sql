@@ -8,6 +8,7 @@ CREATE TABLE profiles (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   username TEXT UNIQUE NOT NULL,
   avatar_url TEXT,
+  bio TEXT,
   total_xp INTEGER DEFAULT 0,
   current_streak INTEGER DEFAULT 0,
   longest_streak INTEGER DEFAULT 0,
@@ -137,3 +138,26 @@ CREATE POLICY "challenges_insert"
   ON challenges FOR INSERT WITH CHECK (auth.uid() = challenger_id);
 CREATE POLICY "challenges_update"
   ON challenges FOR UPDATE USING (auth.uid() = challenger_id OR auth.uid() = challenged_id);
+
+-- 9. NOTIFICATIONS
+CREATE TABLE notifications (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES profiles(id) ON DELETE CASCADE NOT NULL,
+  type TEXT NOT NULL,
+  title TEXT NOT NULL,
+  body TEXT NOT NULL,
+  link TEXT,
+  read BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX idx_notifications_user ON notifications(user_id, created_at DESC);
+
+ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "notifications_select"
+  ON notifications FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "notifications_insert"
+  ON notifications FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "notifications_update"
+  ON notifications FOR UPDATE USING (auth.uid() = user_id);

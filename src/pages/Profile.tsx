@@ -135,20 +135,25 @@ export function Profile() {
                   </div>
                 </div>
 
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <h1 className="text-3xl font-heading font-bold text-text">
-                      {profile.username}
-                    </h1>
-                    {profile.current_streak > 0 && (
-                      <StreakBadge count={profile.current_streak} />
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <h1 className="text-3xl font-heading font-bold text-text">
+                        {profile.username}
+                      </h1>
+                      {profile.current_streak > 0 && (
+                        <StreakBadge count={profile.current_streak} />
+                      )}
+                    </div>
+                    {profile.bio && (
+                      <p className="text-sm text-text-muted mb-2 italic">
+                        {profile.bio}
+                      </p>
                     )}
+                    <XPBar xp={profile.total_xp} />
+                    <p className="text-xs text-text-muted mt-2">
+                      Joined {new Date(profile.join_date).toLocaleDateString()}
+                    </p>
                   </div>
-                  <XPBar xp={profile.total_xp} />
-                  <p className="text-xs text-text-muted mt-2">
-                    Joined {new Date(profile.join_date).toLocaleDateString()}
-                  </p>
-                </div>
 
                 <div className="flex flex-col items-end gap-1">
                   <div className="flex items-center gap-2">

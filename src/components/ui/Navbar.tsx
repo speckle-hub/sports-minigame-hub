@@ -6,6 +6,7 @@ import { useAuthStore } from "../../stores/authStore"
 import { useChallengeStore } from "../../stores/challengeStore"
 import { calculateLevel } from "../../lib/utils"
 import { SoundToggle } from "./SoundToggle"
+import { NotificationBell } from "../NotificationBell"
 
 const navLinks = [
   { to: "/", label: "Home" },
@@ -66,7 +67,8 @@ export function Navbar() {
           ))}
         </div>
 
-        <div className="hidden md:flex items-center gap-3">
+        <div className="hidden md:flex items-center gap-1">
+          <NotificationBell />
           <SoundToggle />
           {isGuest ? (
             <Link
@@ -138,7 +140,10 @@ export function Navbar() {
                     </Link>
                   ))}
               <div className="flex items-center justify-between border-t border-border pt-2 mt-2 px-4">
-                <SoundToggle />
+                <div className="flex items-center gap-2">
+                  <SoundToggle />
+                  <NotificationBell />
+                </div>
                 {isGuest ? (
                   <Link
                     to="/login"

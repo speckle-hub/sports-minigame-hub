@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { motion } from "framer-motion"
 import { Card, CardTitle, CardContent } from "../components/ui/Card"
 import { Button } from "../components/ui/Button"
@@ -71,11 +71,23 @@ interface TopPlayer {
   level: number
 }
 
+interface ActivityEvent {
+  id: string
+  type: "game_result" | "challenge_completed"
+  message: string
+  icon: string
+  link: string
+  created_at: string
+}
+
 export function Home() {
+  const navigate = useNavigate()
   const { profile, isGuest } = useAuthStore()
   const level = profile ? calculateLevel(profile.total_xp) : 0
   const [topPlayers, setTopPlayers] = useState<TopPlayer[]>([])
   const [topPlayersLoading, setTopPlayersLoading] = useState(true)
+  const [activity, setActivity] = useState<ActivityEvent[]>([])
+  const [activityLoading, setActivityLoading] = useState(true)
 
   useEffect(() => {
     let cancelled = false
@@ -102,6 +114,71 @@ export function Home() {
     fetchTopPlayers()
     return () => { cancelled = true }
   }, [])
+
+  useEffect(() => {
+    const pid = profile?.id
+    if (!pid) {
+      setActivityLoading(false)
+      return
+    }
+    let cancelled = false
+    async function fetchActivity() {
+      const events: ActivityEvent[] = []
+
+      const { data: results } = await supabase
+        .from("game_results")
+        .select("game_id, score, xp_earned, created_at")
+        .eq("user_id", pid)
+        .order("created_at", { ascending: false })
+        .limit(5)
+
+      if (results && !cancelled) {
+        for (const r of results) {
+          const label = GAME_LABELS[r.game_id as keyof typeof GAME_LABELS] || r.game_id
+          events.push({
+            id: `gr-${r.created_at}`,
+            type: "game_result",
+            message: `Scored ${r.score} on ${label} (+${r.xp_earned} XP)`,
+            icon: "🎮",
+            link: `/play/${r.game_id}`,
+            created_at: r.created_at,
+          })
+        }
+      }
+
+      const { data: challenges } = await supabase
+        .from("challenges")
+        .select("game_id, status, winner_id, challenger_id, created_at, challenger:challenger_id(username)")
+        .or(`challenger_id.eq.${pid},challenged_id.eq.${pid}`)
+        .eq("status", "completed")
+        .order("created_at", { ascending: false })
+        .limit(5)
+
+      if (challenges && !cancelled) {
+        for (const c of challenges) {
+          const label = GAME_LABELS[c.game_id as keyof typeof GAME_LABELS] || c.game_id
+          const won = c.winner_id === pid
+          const opp = (c as any).challenger?.username || "someone"
+          events.push({
+            id: `ch-${c.created_at}`,
+            type: "challenge_completed",
+            message: won ? `Won a ${label} challenge vs ${opp}` : `Lost a ${label} challenge`,
+            icon: won ? "🏆" : "💔",
+            link: "/challenges",
+            created_at: c.created_at,
+          })
+        }
+      }
+
+      if (!cancelled) {
+        events.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+        setActivity(events.slice(0, 10))
+        setActivityLoading(false)
+      }
+    }
+    fetchActivity()
+    return () => { cancelled = true }
+  }, [profile?.id])
 
   return (
     <div className="min-h-screen pt-24">
@@ -213,6 +290,31 @@ export function Home() {
             ))}
           </div>
         </section>
+
+        {!isGuest && !activityLoading && activity.length > 0 && (
+          <section className="mb-16">
+            <h2 className="text-2xl font-heading font-bold text-text mb-6">
+              Recent Activity
+            </h2>
+            <Card>
+              <div className="space-y-1">
+                {activity.map((e) => (
+                  <button
+                    key={e.id}
+                    onClick={() => navigate(e.link)}
+                    className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-surface-2 transition-colors text-left"
+                  >
+                    <span className="text-xl">{e.icon}</span>
+                    <span className="text-sm text-text flex-1">{e.message}</span>
+                    <span className="text-[11px] text-text-muted whitespace-nowrap">
+                      {new Date(e.created_at).toLocaleDateString()}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </Card>
+          </section>
+        )}
 
         {!topPlayersLoading && topPlayers.length > 0 && (
           <section className="mb-16">

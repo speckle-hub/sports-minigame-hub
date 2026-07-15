@@ -15,6 +15,7 @@ interface EditProfileModalProps {
 export function EditProfileModal({ open, onClose }: EditProfileModalProps) {
   const { profile, updateProfile } = useAuthStore()
   const [username, setUsername] = useState(profile?.username ?? "")
+  const [bio, setBio] = useState(profile?.bio ?? "")
   const [gradientId, setGradientId] = useState(profile?.avatar_url ?? "copper")
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -44,6 +45,7 @@ export function EditProfileModal({ open, onClose }: EditProfileModalProps) {
     const result = await updateProfile({
       username: trimmed,
       avatar_url: gradientId,
+      bio: bio.trim() || null,
     })
 
     if (result.error) {
@@ -107,6 +109,21 @@ export function EditProfileModal({ open, onClose }: EditProfileModalProps) {
                   minLength={3}
                   required
                 />
+
+                <div>
+                  <label className="text-sm font-medium text-text-muted mb-1 block">
+                    Bio
+                  </label>
+                  <textarea
+                    value={bio}
+                    onChange={(e) => setBio(e.target.value)}
+                    placeholder="Tell the world about yourself..."
+                    maxLength={160}
+                    rows={2}
+                    className="w-full bg-surface-2 border border-border rounded-lg px-3 py-2 text-sm text-text placeholder:text-text-dim resize-none focus:outline-none focus:border-copper/50 transition-colors"
+                  />
+                  <p className="text-[11px] text-text-muted mt-1 text-right">{bio.length}/160</p>
+                </div>
 
                 <div>
                   <p className="text-sm font-medium text-text-muted mb-2">

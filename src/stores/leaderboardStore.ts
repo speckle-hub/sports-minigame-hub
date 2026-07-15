@@ -1,6 +1,7 @@
 import { create } from "zustand"
 import { supabase } from "../lib/supabase"
 import { useAuthStore } from "./authStore"
+import type { PostgrestSingleResponse } from "@supabase/supabase-js"
 
 export interface LeaderboardEntry {
   rank: number
@@ -59,9 +60,9 @@ export const useLeaderboardStore = create<LeaderboardState>((set, get) => ({
           const { data } = await supabase
             .from("follows")
             .select("profiles!inner(username)")
-            .eq("follower_id", user.id)
+            .eq("follower_id", user.id) as PostgrestSingleResponse<{ profiles: { username: string } | null }[]>
           followedUsernames = new Set(
-            (data || []).map((r: any) => r.profiles?.username).filter(Boolean)
+            (data || []).map((r) => r.profiles?.username).filter((u): u is string => !!u)
           )
         }
         if (!followedUsernames || followedUsernames.size === 0) {
@@ -99,20 +100,25 @@ export const useLeaderboardStore = create<LeaderboardState>((set, get) => ({
 
       if (game === "all" && period === "weekly") {
         const weekStart = getStartOfWeek()
+        interface WeeklyRow {
+          xp_earned: number
+          user_id: string
+          profiles: { username: string; avatar_url: string | null } | null
+        }
         const { data, error } = await supabase
           .from("game_results")
           .select("xp_earned, user_id, profiles(username, avatar_url)")
-          .gte("created_at", weekStart)
+          .gte("created_at", weekStart) as PostgrestSingleResponse<WeeklyRow[]>
 
         if (error) throw error
 
         const userMap = new Map<string, { username: string; avatar_url: string | null; xp: number }>()
         for (const r of data || []) {
-          const p = (r as any).profiles
+          const p = r.profiles
           if (!p) continue
           const key = p.username
           const existing = userMap.get(key) || { username: p.username, avatar_url: p.avatar_url, xp: 0 }
-          existing.xp += (r as any).xp_earned
+          existing.xp += r.xp_earned
           userMap.set(key, existing)
         }
 
@@ -138,6 +144,13 @@ export const useLeaderboardStore = create<LeaderboardState>((set, get) => ({
       }
 
       const isWeekly = period === "weekly"
+      interface GameResultRow {
+        score: number
+        xp_earned: number
+        user_id: string
+        profiles: { username: string; avatar_url: string | null } | null
+      }
+
       let query = supabase
         .from("game_results")
         .select("score, xp_earned, user_id, profiles(username, avatar_url)")
@@ -148,13 +161,13 @@ export const useLeaderboardStore = create<LeaderboardState>((set, get) => ({
         query = query.gte("created_at", getStartOfWeek())
       }
 
-      const { data, error } = await query
+      const { data, error } = await query as PostgrestSingleResponse<GameResultRow[]>
 
       if (error) throw error
 
       const userMap = new Map<string, { username: string; avatar_url: string | null; bestScore: number; totalXp: number }>()
       for (const r of data || []) {
-        const p = (r as any).profiles
+        const p = r.profiles
         if (!p) continue
         const key = p.username
         const existing = userMap.get(key) || { username: p.username, avatar_url: p.avatar_url, bestScore: 0, totalXp: 0 }

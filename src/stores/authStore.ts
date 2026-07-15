@@ -6,6 +6,7 @@ export interface Profile {
   id: string
   username: string
   avatar_url: string | null
+  bio: string | null
   total_xp: number
   current_streak: number
   longest_streak: number
@@ -25,7 +26,7 @@ interface AuthState {
   setIsGuest: (isGuest: boolean) => void
   setIsLoading: (isLoading: boolean) => void
   loadProfile: (userId: string) => Promise<void>
-  updateProfile: (updates: Partial<Pick<Profile, "username" | "avatar_url">>) => Promise<{ error: string | null }>
+  updateProfile: (updates: Partial<Pick<Profile, "username" | "avatar_url" | "bio">>) => Promise<{ error: string | null }>
   logout: () => Promise<void>
 }
 
@@ -47,6 +48,7 @@ export const useAuthStore = create<AuthState>((set) => ({
             id: "",
             username: "Guest",
             avatar_url: null,
+            bio: null,
             total_xp: 0,
             current_streak: 0,
             longest_streak: 0,
@@ -101,7 +103,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
   },
 
-  updateProfile: async (updates: Partial<Pick<Profile, "username" | "avatar_url">>) => {
+  updateProfile: async (updates: Partial<Pick<Profile, "username" | "avatar_url" | "bio">>) => {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return { error: "Not authenticated" }
 
