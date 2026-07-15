@@ -69,6 +69,14 @@ export const AVATAR_GRADIENTS = [
   { id: "copper-gold", from: "copper", to: "gold", label: "Copper Gold" },
   { id: "pitch-copper", from: "pitch", to: "copper", label: "Pitch Copper" },
   { id: "surface", from: "surface-3", to: "surface-2", label: "Stealth" },
+  { id: "amber", from: "gold", to: "copper", label: "Amber" },
+  { id: "ember", from: "copper", to: "danger", label: "Ember" },
+  { id: "forest", from: "pitch", to: "emerald-800", label: "Forest" },
+  { id: "midnight", from: "copper", to: "surface-3", label: "Midnight" },
+  { id: "royal", from: "gold", to: "copper/40", label: "Royal" },
+  { id: "sage", from: "pitch-light", to: "surface-2", label: "Sage" },
+  { id: "slate", from: "surface-3", to: "surface", label: "Slate" },
+  { id: "flame", from: "danger", to: "gold", label: "Flame" },
 ] as const
 
 export function avatarGradientClasses(id: string | null | undefined): string {
@@ -79,6 +87,14 @@ export function avatarGradientClasses(id: string | null | undefined): string {
     "copper-gold": "from-copper to-gold",
     "pitch-copper": "from-pitch to-copper",
     surface: "from-surface-3 to-surface-2",
+    amber: "from-gold to-copper",
+    ember: "from-copper to-danger",
+    forest: "from-pitch to-emerald-800",
+    midnight: "from-copper to-surface-3",
+    royal: "from-gold to-copper/40",
+    sage: "from-pitch-light to-surface-2",
+    slate: "from-surface-3 to-surface",
+    flame: "from-danger to-gold",
   }
   return map[id ?? ""] ?? "from-copper to-copper/50"
 }

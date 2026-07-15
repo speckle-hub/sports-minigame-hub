@@ -5,6 +5,7 @@ import { Input } from "./ui/Input"
 import { Card, CardTitle } from "./ui/Card"
 import { useAuthStore } from "../stores/authStore"
 import { AVATAR_GRADIENTS, avatarGradientClasses } from "../lib/utils"
+import { getCosmetic, isUnlocked } from "../lib/cosmetics"
 
 interface EditProfileModalProps {
   open: boolean
@@ -114,21 +115,27 @@ export function EditProfileModal({ open, onClose }: EditProfileModalProps) {
                   <div className="grid grid-cols-3 gap-2.5">
                     {AVATAR_GRADIENTS.map((g) => {
                       const selected = gradientId === g.id
+                      const unlocked = isUnlocked(g.id, profile?.unlocked_cosmetics || [])
+                      const cosmetic = getCosmetic(g.id)
                       return (
                         <button
                           key={g.id}
-                          onClick={() => setGradientId(g.id)}
-                          className={`flex flex-col items-center gap-1.5 p-2 rounded-xl border-2 transition-all cursor-pointer ${
+                          onClick={() => unlocked && setGradientId(g.id)}
+                          disabled={!unlocked}
+                          className={`flex flex-col items-center gap-1.5 p-2 rounded-xl border-2 transition-all ${
                             selected
                               ? "border-copper bg-surface-3"
-                              : "border-transparent bg-surface-2 hover:border-border"
+                              : unlocked
+                                ? "border-transparent bg-surface-2 hover:border-border cursor-pointer"
+                                : "border-transparent bg-surface-3/50 opacity-50 cursor-not-allowed"
                           }`}
+                          title={unlocked ? g.label : cosmetic?.condition || "Locked"}
                         >
                           <div
-                            className={`w-full h-8 rounded-lg bg-gradient-to-br ${avatarGradientClasses(g.id)}`}
+                            className={`w-full h-8 rounded-lg bg-gradient-to-br ${avatarGradientClasses(g.id)} ${unlocked ? "" : "saturate-0"}`}
                           />
                           <span className={`text-[11px] font-medium ${selected ? "text-copper" : "text-text-muted"}`}>
-                            {g.label}
+                            {unlocked ? g.label : "🔒"}
                           </span>
                         </button>
                       )

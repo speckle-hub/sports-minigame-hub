@@ -11,6 +11,7 @@ import { ProfileSkeleton } from "../components/ui/ProfileSkeleton"
 import { EmptyState } from "../components/ui/EmptyState"
 import { useAuthStore } from "../stores/authStore"
 import { calculateLevel, GAME_LABELS, GAME_IDS, avatarGradientClasses } from "../lib/utils"
+import { ALL_COSMETICS, isUnlocked } from "../lib/cosmetics"
 
 export function Profile() {
   const { username } = useParams<{ username: string }>()
@@ -168,29 +169,48 @@ export function Profile() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Unlocked Cosmetics</CardTitle>
+              <CardTitle>Cosmetics</CardTitle>
+              <span className="text-xs text-text-muted">
+                {(profile.unlocked_cosmetics || []).length} / {ALL_COSMETICS.length}
+              </span>
             </CardHeader>
-            <CardContent>
-              {profile.unlocked_cosmetics && profile.unlocked_cosmetics.length > 0 ? (
-                <div className="flex flex-wrap gap-3">
-                  {profile.unlocked_cosmetics.map((cosmetic) => (
-                    <div
-                      key={cosmetic}
-                      className="px-4 py-2 bg-surface-2 border border-border rounded-lg text-sm text-text"
-                    >
-                      {cosmetic
-                        .split("-")
-                        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-                        .join(" ")}
+            <CardContent className="space-y-6">
+              {(["gradient", "badge"] as const).map((type) => {
+                const items = ALL_COSMETICS.filter((c) => c.type === type)
+                return (
+                  <div key={type}>
+                    <h4 className="text-xs font-heading font-bold text-text-muted uppercase tracking-wider mb-3">
+                      {type === "gradient" ? "Avatar Gradients" : "Badges"}
+                    </h4>
+                    <div className="flex flex-wrap gap-2.5">
+                      {items.map((cosmetic) => {
+                        const unlocked = isUnlocked(cosmetic.id, profile.unlocked_cosmetics || [])
+                        return (
+                          <div
+                            key={cosmetic.id}
+                            className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-colors ${
+                              unlocked
+                                ? "bg-surface-2 border-border text-text"
+                                : "bg-surface-3/30 border-border/50 text-text-dim opacity-60"
+                            }`}
+                            title={unlocked ? cosmetic.description : cosmetic.condition}
+                          >
+                            <span>{cosmetic.icon}</span>
+                            <span className="font-medium">{cosmetic.name}</span>
+                            {!unlocked && (
+                              <span className="text-[10px] text-text-muted ml-1">🔒</span>
+                            )}
+                          </div>
+                        )
+                      })}
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <EmptyState
-                  icon="🎨"
-                  title="No Cosmetics Yet"
-                  description="Earn cosmetics by leveling up, hitting streak milestones, and completing achievements."
-                />
+                  </div>
+                )
+              })}
+              {(profile.unlocked_cosmetics || []).length === 0 && (
+                <p className="text-xs text-text-muted text-center">
+                  Complete challenges and level up to earn cosmetics. They'll appear here once unlocked.
+                </p>
               )}
             </CardContent>
           </Card>

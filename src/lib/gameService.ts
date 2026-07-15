@@ -1,6 +1,7 @@
 import { supabase } from "./supabase"
 import { useAuthStore } from "../stores/authStore"
 import { useGameStore } from "../stores/gameStore"
+import { checkAndUnlockCosmetics } from "./unlockCosmetics"
 
 const GUEST_STORAGE_KEY = "sports-hub-guest-results"
 
@@ -130,8 +131,19 @@ export async function saveGameResult(result: GameResultPayload) {
     console.error("Failed to update XP:", xpError)
   }
 
+  const newTotalXp = (profile?.total_xp || 0) + result.xpEarned
+
   // Reload profile
   useAuthStore.getState().loadProfile(user.id)
+
+  // Check and unlock cosmetics (pass updated XP)
+  const updatedProfile = profile ? { ...profile, total_xp: newTotalXp } : profile
+  checkAndUnlockCosmetics(user.id, updatedProfile as any, {
+    gameId: result.gameId,
+    score: result.score,
+    details: result.details,
+    xpEarned: result.xpEarned,
+  }).catch(console.error)
 
   useGameStore.getState().setLastResult({
     ...result,
@@ -228,8 +240,18 @@ export async function saveTacticsDailyResult(result: GameResultPayload) {
       .eq("id", user.id)
   }
 
+  const newTotalXpTactics = (profile?.total_xp || 0) + result.xpEarned
+
   // Reload profile
   useAuthStore.getState().loadProfile(user.id)
+
+  const updatedProfileTactics = profile ? { ...profile, total_xp: newTotalXpTactics } : profile
+  checkAndUnlockCosmetics(user.id, updatedProfileTactics as any, {
+    gameId: result.gameId,
+    score: result.score,
+    details: result.details,
+    xpEarned: result.xpEarned,
+  }).catch(console.error)
 
   useGameStore.getState().setLastResult({
     ...result,
