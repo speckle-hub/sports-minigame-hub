@@ -1,5 +1,6 @@
 import { lazy, Suspense } from "react"
-import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom"
+import { AnimatePresence, motion } from "framer-motion"
 import { Navbar } from "./components/ui/Navbar"
 import { AuthProvider } from "./components/AuthProvider"
 import { MilestoneWatcher } from "./components/MilestoneWatcher"
@@ -39,6 +40,46 @@ function GameSuspense({ children }: { children: React.ReactNode }) {
   )
 }
 
+function PageTransition({ children }: { children: React.ReactNode }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -12 }}
+      transition={{ duration: 0.2, ease: "easeInOut" }}
+    >
+      {children}
+    </motion.div>
+  )
+}
+
+function AppRoutes() {
+  const location = useLocation()
+  return (
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route path="/" element={<PageTransition><Home /></PageTransition>} />
+        <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
+        <Route path="/signup" element={<PageTransition><Signup /></PageTransition>} />
+        <Route path="/profile/:username" element={<PageTransition><Profile /></PageTransition>} />
+        <Route path="/leaderboards" element={<PageTransition><Leaderboards /></PageTransition>} />
+        <Route path="/achievements" element={<PageTransition><Achievements /></PageTransition>} />
+        <Route path="/challenges" element={<PageTransition><Challenges /></PageTransition>} />
+        <Route path="/play/reflex-rush" element={<PageTransition><GameSuspense><ReflexRushPage /></GameSuspense></PageTransition>} />
+        <Route path="/play/tactics-daily" element={<PageTransition><GameSuspense><TacticsDailyPage /></GameSuspense></PageTransition>} />
+        <Route path="/play/match-call" element={<PageTransition><GameSuspense><MatchCallPage /></GameSuspense></PageTransition>} />
+        <Route path="/play/true-or-false" element={<PageTransition><GameSuspense><TrueFalsePage /></GameSuspense></PageTransition>} />
+        <Route path="/play/career-path" element={<PageTransition><GameSuspense><CareerPathPage /></GameSuspense></PageTransition>} />
+        <Route path="/play/football-a-z" element={<PageTransition><GameSuspense><FootballAZPage /></GameSuspense></PageTransition>} />
+        <Route path="/play/football-jeopardy" element={<PageTransition><GameSuspense><FootballJeopardyPage /></GameSuspense></PageTransition>} />
+        <Route path="/play/trivia-path" element={<PageTransition><GameSuspense><TriviaPathPage /></GameSuspense></PageTransition>} />
+        <Route path="/play/tic-tac-toe-grid" element={<PageTransition><GameSuspense><TicTacToeGridPage /></GameSuspense></PageTransition>} />
+        <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
+      </Routes>
+    </AnimatePresence>
+  )
+}
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -47,25 +88,7 @@ export default function App() {
         <Onboarding />
         <Navbar />
         <ErrorBoundary>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/profile/:username" element={<Profile />} />
-            <Route path="/leaderboards" element={<Leaderboards />} />
-            <Route path="/achievements" element={<Achievements />} />
-            <Route path="/challenges" element={<Challenges />} />
-            <Route path="/play/reflex-rush" element={<GameSuspense><ReflexRushPage /></GameSuspense>} />
-            <Route path="/play/tactics-daily" element={<GameSuspense><TacticsDailyPage /></GameSuspense>} />
-            <Route path="/play/match-call" element={<GameSuspense><MatchCallPage /></GameSuspense>} />
-            <Route path="/play/true-or-false" element={<GameSuspense><TrueFalsePage /></GameSuspense>} />
-            <Route path="/play/career-path" element={<GameSuspense><CareerPathPage /></GameSuspense>} />
-            <Route path="/play/football-a-z" element={<GameSuspense><FootballAZPage /></GameSuspense>} />
-            <Route path="/play/football-jeopardy" element={<GameSuspense><FootballJeopardyPage /></GameSuspense>} />
-            <Route path="/play/trivia-path" element={<GameSuspense><TriviaPathPage /></GameSuspense>} />
-            <Route path="/play/tic-tac-toe-grid" element={<GameSuspense><TicTacToeGridPage /></GameSuspense>} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <AppRoutes />
         </ErrorBoundary>
       </AuthProvider>
     </BrowserRouter>

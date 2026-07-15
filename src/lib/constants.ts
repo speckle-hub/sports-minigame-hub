@@ -246,6 +246,105 @@ export const MATCH_CALL_SCENARIOS: MatchCallScenario[] = [
     explanation:
       "3.4 xG over 4 games means he's getting chances, just unlucky. Against the bottom team, the dam breaks — he scores, but a brace is optimistic for someone in poor form.",
   },
+  {
+    scenario: "A winger has completed 8/12 dribbles and created 4 chances. His cross success rate is 40%. His team trails 1-0. 65th minute.",
+    options: [
+      "He provides an assist off a dribble and cross",
+      "He's substituted for a defensive option",
+      "He scores a solo goal cutting inside",
+      "He switches flanks to find space",
+    ],
+    correctIndex: 0,
+    explanation: "Strong dribbling and chance creation suggest he's the most likely source of an equalizer. His crossing is decent enough to produce an assist.",
+  },
+  {
+    scenario: "Two teams are level on points with 5 games remaining. Team A has a +12 goal difference, Team B has +6. Team A faces three top-half teams, Team B faces four relegation candidates.",
+    options: [
+      "Team A wins the title comfortably",
+      "Team B edges it on the final day",
+      "Both teams drop points and a third team wins",
+      "Team A crumbles under pressure",
+    ],
+    correctIndex: 1,
+    explanation: "Team B's easier run-in gives them the edge. Facing relegation candidates is still easier than top-half opposition over 5 games.",
+  },
+  {
+    scenario: "A striker has scored in 4 consecutive matches. He's averaging 3.5 shots per game with 60% on target. He's playing against a team that hasn't kept a clean sheet in 6 games.",
+    options: [
+      "He extends his scoring streak to 5 games",
+      "He's kept quiet by a tactical double-team",
+      "He gets an assist but no goal",
+      "He misses a penalty",
+    ],
+    correctIndex: 0,
+    explanation: "Four-game streak with high shot volume against a leaky defense strongly suggests he scores again. Form and fixture align.",
+  },
+  {
+    scenario: "A substitute is brought on in the 70th minute with his team down 1-0. He's scored 3 goals this season, all as a sub. He's known for late runs into the box.",
+    options: [
+      "He scores a late equalizer",
+      "He picks up a yellow card for a tactical foul",
+      "He fails to make an impact",
+      "He provides the winning assist",
+    ],
+    correctIndex: 0,
+    explanation: "A proven impact sub with a history of scoring late against tired legs — the data strongly favors an equalizer.",
+  },
+  {
+    scenario: "A central defender has won 90% of aerial duels this season. The opposition's main tactic is long balls and crosses. The match is 0-0 at halftime.",
+    options: [
+      "The defender dominates and keeps a clean sheet",
+      "The opposition scores from a set piece",
+      "The defender gets beaten for pace on the counter",
+      "The match ends 0-0",
+    ],
+    correctIndex: 3,
+    explanation: "The defender's aerial dominance neutralizes the opponent's main threat. 0-0 at half suggests a stalemate that's likely to continue.",
+  },
+  {
+    scenario: "A playmaker has completed 90% of passes, 5 key passes, and 2 big chances created. But his team trails 2-0. The manager makes a double substitution in the 60th minute.",
+    options: [
+      "The playmaker orchestrates a comeback",
+      "The team loses 2-0 despite the changes",
+      "The playmaker is substituted off",
+      "The score becomes 2-1 but no equalizer",
+    ],
+    correctIndex: 1,
+    explanation: "Despite individual brilliance, a 2-0 deficit is steep. The playmaker is doing everything right but the team collectively isn't performing.",
+  },
+  {
+    scenario: "A young full-back has made 3 tackles, 2 interceptions, and completed 88% of passes. He's up against a speedy winger who has beaten him twice already. 55th minute.",
+    options: [
+      "He adapts and neutralizes the winger in the second half",
+      "He gets sent off for a second yellow",
+      "The winger scores after beating him again",
+      "He's substituted at halftime",
+    ],
+    correctIndex: 3,
+    explanation: "Two beatings in 55 minutes suggests the full-back is struggling. A good manager recognizes this and makes an early change.",
+  },
+  {
+    scenario: "A defensive midfielder has covered 11km already, made 8 recoveries, and won 5/6 tackles. His passing accuracy dropped to 72% in the last 15 minutes. 75th minute.",
+    options: [
+      "He's substituted due to fatigue",
+      "He scores a rare goal from outside the box",
+      "He receives a yellow card for a late tackle",
+      "He finishes the match strongly",
+    ],
+    correctIndex: 0,
+    explanation: "11km covered with declining passing accuracy signals fatigue. A manager protects their lead by bringing on fresh legs.",
+  },
+  {
+    scenario: "A team has scored 8 goals from set pieces this season (most in the league). They're awarded a corner in the 85th minute, trailing 1-0.",
+    options: [
+      "They score from the corner",
+      "They concede on the counter from the corner",
+      "The corner comes to nothing",
+      "A defender is sent off during the corner",
+    ],
+    correctIndex: 0,
+    explanation: "The league's best set-piece team with a corner in a high-pressure moment — the numbers heavily favor a goal.",
+  },
 ]
 
 export const TACTICS_DAILY_PUZZLES: Array<{
@@ -550,6 +649,66 @@ export const TRUE_FALSE_QUESTIONS: TrueFalseQuestion[] = [
     answer: true,
     explanation: "Leicester City won the Premier League in the 2015/16 season at odds of 5000/1.",
   },
+  {
+    statement: "The original World Cup trophy was named the Jules Rimet Trophy.",
+    answer: true,
+    explanation: "The original trophy was named after FIFA president Jules Rimet and was awarded from 1930 to 1970.",
+  },
+  {
+    statement: "Liverpool has won more European Cups than any other English club.",
+    answer: true,
+    explanation: "Liverpool has won the European Cup/Champions League 6 times, more than any other English club.",
+  },
+  {
+    statement: "Yaya Touré won the African Player of the Year award four times in a row.",
+    answer: true,
+    explanation: "Yaya Touré won the award in 2011, 2012, 2013, and 2014 — four consecutive years.",
+  },
+  {
+    statement: "A penalty shootout consists of 10 penalties per team.",
+    answer: false,
+    explanation: "Each team takes 5 penalties initially. If still tied, sudden death follows.",
+  },
+  {
+    statement: "Chelsea won the UEFA Champions League in 2021.",
+    answer: true,
+    explanation: "Chelsea defeated Manchester City 1-0 in the 2021 final in Porto.",
+  },
+  {
+    statement: "The 'Busby Babes' refers to the Manchester United youth team of the 1950s.",
+    answer: true,
+    explanation: "The Busby Babes were the young Manchester United team managed by Matt Busby in the 1950s.",
+  },
+  {
+    statement: "Zinedine Zidane was sent off in the 2006 World Cup final.",
+    answer: true,
+    explanation: "Zidane was sent off for headbutting Marco Materazzi in extra time of the 2006 final.",
+  },
+  {
+    statement: "Barcelona's Camp Nou has a capacity of over 100,000 spectators.",
+    answer: false,
+    explanation: "Camp Nou's official capacity is 99,354. It's the largest stadium in Europe but under 100,000.",
+  },
+  {
+    statement: "The first Premier League season was 1992/93.",
+    answer: true,
+    explanation: "The Premier League launched in 1992, replacing the Football League First Division.",
+  },
+  {
+    statement: "Ryan Giggs won 13 Premier League titles with Manchester United.",
+    answer: true,
+    explanation: "Giggs holds the record for most Premier League titles with 13, all with Manchester United.",
+  },
+  {
+    statement: "Bayern Munich has won the treble (league, cup, and Champions League) more than once.",
+    answer: true,
+    explanation: "Bayern won the treble in 2013 and again in 2020.",
+  },
+  {
+    statement: "A referee can change a decision after play has restarted.",
+    answer: false,
+    explanation: "Once play has restarted, the referee cannot change a decision.",
+  },
 ]
 
 export interface CareerPathPlayer {
@@ -638,6 +797,50 @@ export const CAREER_PATH_PLAYERS: CareerPathPlayer[] = [
     name: "Paul Pogba",
     clubs: ["Manchester United", "Juventus", "Manchester United", "Juventus"],
   },
+  {
+    name: "Luka Modric",
+    clubs: ["Dinamo Zagreb", "Tottenham Hotspur", "Real Madrid"],
+  },
+  {
+    name: "Virgil van Dijk",
+    clubs: ["Groningen", "Celtic", "Southampton", "Liverpool"],
+  },
+  {
+    name: "Erling Haaland",
+    clubs: ["Bryne", "Molde", "Red Bull Salzburg", "Borussia Dortmund", "Manchester City"],
+  },
+  {
+    name: "Jude Bellingham",
+    clubs: ["Birmingham City", "Borussia Dortmund", "Real Madrid"],
+  },
+  {
+    name: "Mohamed Salah",
+    clubs: ["Basel", "Chelsea", "Fiorentina", "Roma", "Liverpool"],
+  },
+  {
+    name: "Sadio Mane",
+    clubs: ["Metz", "Red Bull Salzburg", "Southampton", "Liverpool", "Bayern Munich", "Al-Nassr"],
+  },
+  {
+    name: "Eden Hazard",
+    clubs: ["Lille", "Chelsea", "Real Madrid"],
+  },
+  {
+    name: "Sergio Busquets",
+    clubs: ["Barcelona", "Inter Miami"],
+  },
+  {
+    name: "Xavi Hernandez",
+    clubs: ["Barcelona", "Al-Sadd"],
+  },
+  {
+    name: "Andres Iniesta",
+    clubs: ["Barcelona", "Vissel Kobe"],
+  },
+  {
+    name: "Claudio Pizarro",
+    clubs: ["Werder Bremen", "Bayern Munich", "Chelsea", "Werder Bremen", "Bayern Munich", "Werder Bremen", "Cologne"],
+  },
 ]
 
 export const CAREER_PATH_ROUNDS = 5
@@ -713,6 +916,18 @@ export const FOOTBALL_JEOPARDY_TILES: JeopardyTile[] = [
   { category: "Ballon d'Or Winners", points: 200, question: "Who won the Ballon d'Or the most times?", answer: "Lionel Messi" },
   { category: "Ballon d'Or Winners", points: 300, question: "Which year did Cristiano Ronaldo win his first Ballon d'Or?", answer: "2008" },
   { category: "Ballon d'Or Winners", points: 300, question: "Which defender won the Ballon d'Or in 2006?", answer: "Fabio Cannavaro" },
+  { category: "Iconic Goalscorers", points: 100, question: "Who scored the most goals in a single Premier League season (38 games)?", answer: "Erling Haaland" },
+  { category: "Iconic Goalscorers", points: 100, question: "Who scored the bicycle kick goal for Manchester United in the 2011 Premier League?", answer: "Wayne Rooney" },
+  { category: "Iconic Goalscorers", points: 200, question: "Who scored the 'Goal of the Century' for Argentina in 1986?", answer: "Diego Maradona" },
+  { category: "Iconic Goalscorers", points: 200, question: "Which player scored a hat-trick in the 2022 World Cup final?", answer: "Kylian Mbappé" },
+  { category: "Iconic Goalscorers", points: 300, question: "Who scored the winning goal in the 2014 World Cup final?", answer: "Mario Götze" },
+  { category: "Iconic Goalscorers", points: 300, question: "Which player scored the fastest goal in World Cup history (11 seconds)?", answer: "Hakan Şükür" },
+  { category: "Managers", points: 100, question: "Which manager has won the most Premier League titles?", answer: "Sir Alex Ferguson" },
+  { category: "Managers", points: 100, question: "Which manager led Leicester City to the Premier League title in 2016?", answer: "Claudio Ranieri" },
+  { category: "Managers", points: 200, question: "Who was the manager of Barcelona during their 2009 sextuple-winning season?", answer: "Pep Guardiola" },
+  { category: "Managers", points: 200, question: "Which manager has won the Champions League with two different clubs?", answer: "Jose Mourinho" },
+  { category: "Managers", points: 300, question: "Who managed the Netherlands to the 2010 World Cup final?", answer: "Bert van Marwijk" },
+  { category: "Managers", points: 300, question: "Which manager led AC Milan to two Champions League titles in the 2000s?", answer: "Carlo Ancelotti" },
 ]
 
 export const FOOTBALL_JEOPARDY_TILES_PER_SESSION = 6
@@ -755,6 +970,17 @@ export const TRIVIA_PATH_QUESTIONS: TriviaPathQuestion[] = [
   { question: "Which manager has won the most Premier League titles?", options: ["Sir Alex Ferguson", "Pep Guardiola", "Arsène Wenger", "José Mourinho"], correctIndex: 0, difficulty: "easy" },
   { question: "Which country has won the most European Championship titles?", options: ["Spain", "Germany", "France", "Italy"], correctIndex: 0, difficulty: "medium" },
   { question: "Who was the first player to score 100 Champions League goals?", options: ["Cristiano Ronaldo", "Lionel Messi", "Raúl", "Karim Benzema"], correctIndex: 2, difficulty: "hard" },
+  { question: "Which country won the 2022 World Cup?", options: ["Argentina", "France", "Brazil", "England"], correctIndex: 0, difficulty: "easy" },
+  { question: "Who is the all-time top scorer in Premier League history?", options: ["Alan Shearer", "Harry Kane", "Wayne Rooney", "Andy Cole"], correctIndex: 0, difficulty: "easy" },
+  { question: "Which club did Cristiano Ronaldo play for before joining Manchester United in 2021?", options: ["Juventus", "Real Madrid", "Sporting CP", "Al-Nassr"], correctIndex: 0, difficulty: "easy" },
+  { question: "What is the diameter of a standard football goal?", options: ["24 ft × 8 ft", "22 ft × 7 ft", "26 ft × 9 ft", "20 ft × 8 ft"], correctIndex: 0, difficulty: "medium" },
+  { question: "Which player has the most assists in Champions League history?", options: ["Cristiano Ronaldo", "Lionel Messi", "Ryan Giggs", "Angel Di Maria"], correctIndex: 1, difficulty: "medium" },
+  { question: "Which country has never missed a World Cup tournament?", options: ["Brazil", "Germany", "Italy", "Argentina"], correctIndex: 0, difficulty: "medium" },
+  { question: "Who invented the 'Cruyff Turn'?", options: ["Johan Cruyff", "Pep Guardiola", "Marco van Basten", "Ruud Gullit"], correctIndex: 0, difficulty: "easy" },
+  { question: "Which English club has never been relegated from the Premier League?", options: ["Arsenal", "Everton", "Liverpool", "Manchester United"], correctIndex: 2, difficulty: "hard" },
+  { question: "Who scored the goal that sent Argentina to the 2022 World Cup final?", options: ["Lionel Messi", "Julian Alvarez", "Nahuel Molina", "Angel Di Maria"], correctIndex: 0, difficulty: "hard" },
+  { question: "Which club has won the most Europa League titles?", options: ["Sevilla", "Juventus", "Inter Milan", "Atletico Madrid"], correctIndex: 0, difficulty: "medium" },
+  { question: "What year did women's football become an Olympic sport?", options: ["1996", "2000", "2004", "1992"], correctIndex: 0, difficulty: "hard" },
 ]
 
 export const TRIVIA_PATH_TILES_PER_SESSION = 6
@@ -874,6 +1100,72 @@ export const TIC_TAC_TOE_GRIDS: TicTacToeGridData[] = [
         ["zanetti", "milito", "cambiasso", "sneijder", "ibrahimovic", "etoo", "cordoba", "samuel", "stankovic"],
         ["zanetti", "milito", "sneijder", "etoo", "pandev", "cambiasso"],
         ["ibrahimovic", "cambiasso", "crespo", "veron", "djorkaeff", "seedorf", "ronaldo", "eto'o", "figo"],
+      ],
+    ],
+  },
+  {
+    id: 6,
+    rows: ["African Footballer of the Year", "World Cup Golden Ball", "Premier League Legend"],
+    cols: ["Played in England", "Played in Spain", "Played in Italy"],
+    cells: [
+      [
+        ["etoo", "drogba", "yaya toure", "salah", "mane", "aubameyang", "kanu"],
+        ["etoo", "yaya toure", "aubameyang"],
+        ["etoo", "weah", "milla", "geremi"],
+      ],
+      [
+        ["modric", "forlan", "messi", "kane"],
+        ["modric", "messi", "forlan", "ronaldo", "zidane"],
+        ["modric", "cannavaro", "ronaldo", "zidane"],
+      ],
+      [
+        ["shearer", "henry", "lampard", "gerrard", "scholes", "rooney", "kane"],
+        ["henry", "beckham", "bale", "cristiano ronaldo", "owen", "lineker"],
+        ["platt", "gascogne", "lineker", "zola", "vialli", "crespo"],
+      ],
+    ],
+  },
+  {
+    id: 7,
+    rows: ["Won the Copa America", "Won the AFCON", "Won the Euros"],
+    cols: ["Played in Europe's Top 5 Leagues", "Scored in a World Cup", "Club Captain"],
+    cells: [
+      [
+        ["messi", "neymar", "ronaldo", "suarez", "di maria", "cafu", "ronaldinho"],
+        ["messi", "ronaldo", "pele", "kaka", "zico", "batistuta", "crespo", "higuain"],
+        ["messi", "maradona", "zanetti", "cafu", "gerson", "dunga", "tevez"],
+      ],
+      [
+        ["etoo", "drogba", "salah", "mane", "yaya toure", "aubameyang", "mahrez", "osimhen"],
+        ["etoo", "drogba", "salah", "mane", "weah", "milla", "osimhen"],
+        ["etoo", "drogba", "yaya toure", "salah", "mane", "aubameyang", "kanu"],
+      ],
+      [
+        ["ronaldo", "zidane", "muller", "iniesta", "xavi", "pirlo", "buffon", "neuer"],
+        ["ronaldo", "zidane", "muller", "griezmann", "shevchenko", "cristiano ronaldo", "morata"],
+        ["zidane", "pirlo", "casillas", "neuer", "ramos", "maldini", "cristiano ronaldo"],
+      ],
+    ],
+  },
+  {
+    id: 8,
+    rows: ["Played in the 2014 World Cup", "Played in the 2018 World Cup", "Played in the 2022 World Cup"],
+    cols: ["Scored in a World Cup knockout match", "Captained their national team", "Played for a club in Spain"],
+    cells: [
+      [
+        ["messi", "neymar", "muller", "james", "robben", "van persie", "higuain", "klose"],
+        ["messi", "neymar", "ramos", "lahm", "buffon", "gerrard", "cristiano ronaldo"],
+        ["messi", "neymar", "ramos", "iniesta", "xavi", "modric", "cristiano ronaldo", "benzema"],
+      ],
+      [
+        ["mbappe", "modric", "kane", "griezmann", "hazard", "lukaku", "ronaldo"],
+        ["mbappe", "modric", "kane", "ronaldo", "hazard", "zaha", "cavani"],
+        ["mbappe", "modric", "courtois", "hazard", "ronaldo", "isco", "asensio"],
+      ],
+      [
+        ["messi", "mbappe", "giroud", "alvarez", "richarlison", "rashford"],
+        ["messi", "mbappe", "kane", "neymar", "modric", "ronaldo"],
+        ["messi", "mbappe", "neymar", "modric", ""],
       ],
     ],
   },
