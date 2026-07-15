@@ -110,3 +110,30 @@ CREATE POLICY "follows_insert"
   ON follows FOR INSERT WITH CHECK (auth.uid() = follower_id);
 CREATE POLICY "follows_delete"
   ON follows FOR DELETE USING (auth.uid() = follower_id);
+
+-- 8. HEAD-TO-HEAD CHALLENGES
+CREATE TABLE challenges (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  challenger_id UUID REFERENCES profiles(id) ON DELETE CASCADE NOT NULL,
+  challenged_id UUID REFERENCES profiles(id) ON DELETE CASCADE NOT NULL,
+  game_id TEXT NOT NULL,
+  challenger_score NUMERIC NOT NULL,
+  challenged_score NUMERIC,
+  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'completed')),
+  winner_id UUID REFERENCES profiles(id),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  completed_at TIMESTAMPTZ
+);
+
+CREATE INDEX idx_challenges_challenger ON challenges(challenger_id);
+CREATE INDEX idx_challenges_challenged ON challenges(challenged_id);
+CREATE INDEX idx_challenges_status ON challenges(status);
+
+ALTER TABLE challenges ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "challenges_select"
+  ON challenges FOR SELECT USING (auth.uid() = challenger_id OR auth.uid() = challenged_id);
+CREATE POLICY "challenges_insert"
+  ON challenges FOR INSERT WITH CHECK (auth.uid() = challenger_id);
+CREATE POLICY "challenges_update"
+  ON challenges FOR UPDATE USING (auth.uid() = challenger_id OR auth.uid() = challenged_id);

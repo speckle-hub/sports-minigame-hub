@@ -1,8 +1,9 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Link, useLocation } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import { cn } from "../../lib/utils"
 import { useAuthStore } from "../../stores/authStore"
+import { useChallengeStore } from "../../stores/challengeStore"
 import { calculateLevel } from "../../lib/utils"
 import { SoundToggle } from "./SoundToggle"
 
@@ -10,13 +11,19 @@ const navLinks = [
   { to: "/", label: "Home" },
   { to: "/leaderboards", label: "Leaderboards" },
   { to: "/achievements", label: "Achievements" },
+  { to: "/challenges", label: "Challenges" },
 ]
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const location = useLocation()
   const { profile, isGuest } = useAuthStore()
+  const pendingCount = useChallengeStore((s) => s.pendingCount)
   const level = profile ? calculateLevel(profile.total_xp) : 0
+
+  useEffect(() => {
+    if (!isGuest) useChallengeStore.getState().loadChallenges().catch(console.error)
+  }, [isGuest])
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-base/80 backdrop-blur-xl border-b border-border">
@@ -49,7 +56,12 @@ export function Navbar() {
                   transition={{ type: "spring", stiffness: 400, damping: 30 }}
                 />
               )}
-              <span className="relative z-10">{link.label}</span>
+              <span className="relative z-10 flex items-center gap-1.5">
+                {link.label}
+                {link.to === "/challenges" && pendingCount > 0 && (
+                  <span className="w-2 h-2 rounded-full bg-danger" />
+                )}
+              </span>
             </Link>
           ))}
         </div>
@@ -105,21 +117,26 @@ export function Navbar() {
             className="md:hidden overflow-hidden bg-base/95 backdrop-blur-xl border-b border-border"
           >
             <div className="px-4 py-4 space-y-2">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.to}
-                  to={link.to}
-                  onClick={() => setMobileOpen(false)}
-                  className={cn(
-                    "block px-4 py-3 text-sm font-medium rounded-lg transition-colors",
-                    location.pathname === link.to
-                      ? "text-copper bg-surface-2"
-                      : "text-text-muted hover:text-text hover:bg-surface-2"
-                  )}
-                >
-                  {link.label}
-                </Link>
-              ))}
+                  {navLinks.map((link) => (
+                    <Link
+                      key={link.to}
+                      to={link.to}
+                      onClick={() => setMobileOpen(false)}
+                      className={cn(
+                        "block px-4 py-3 text-sm font-medium rounded-lg transition-colors",
+                        location.pathname === link.to
+                          ? "text-copper bg-surface-2"
+                          : "text-text-muted hover:text-text hover:bg-surface-2"
+                      )}
+                    >
+                      <span className="flex items-center gap-1.5">
+                        {link.label}
+                        {link.to === "/challenges" && pendingCount > 0 && (
+                          <span className="w-2 h-2 rounded-full bg-danger" />
+                        )}
+                      </span>
+                    </Link>
+                  ))}
               <div className="flex items-center justify-between border-t border-border pt-2 mt-2 px-4">
                 <SoundToggle />
                 {isGuest ? (

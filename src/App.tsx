@@ -8,6 +8,7 @@ import { Signup } from "./pages/Signup"
 import { Profile } from "./pages/Profile"
 import { Leaderboards } from "./pages/Leaderboards"
 import { Achievements } from "./pages/Achievements"
+import { Challenges } from "./pages/Challenges"
 import { ReflexRushPage } from "./pages/ReflexRushPage"
 import { TacticsDailyPage } from "./pages/TacticsDailyPage"
 import { MatchCallPage } from "./pages/MatchCallPage"
@@ -32,6 +33,7 @@ export default function App() {
           <Route path="/profile/:username" element={<Profile />} />
           <Route path="/leaderboards" element={<Leaderboards />} />
           <Route path="/achievements" element={<Achievements />} />
+          <Route path="/challenges" element={<Challenges />} />
           <Route path="/play/reflex-rush" element={<ReflexRushPage />} />
           <Route path="/play/tactics-daily" element={<TacticsDailyPage />} />
           <Route path="/play/match-call" element={<MatchCallPage />} />

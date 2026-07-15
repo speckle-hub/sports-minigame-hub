@@ -11,6 +11,7 @@ import { ProfileSkeleton } from "../components/ui/ProfileSkeleton"
 import { EmptyState } from "../components/ui/EmptyState"
 import { useAuthStore } from "../stores/authStore"
 import { useFriendStore } from "../stores/friendStore"
+import { useChallengeStore } from "../stores/challengeStore"
 import { supabase } from "../lib/supabase"
 import { calculateLevel, GAME_LABELS, GAME_IDS, avatarGradientClasses } from "../lib/utils"
 import { ALL_COSMETICS, isUnlocked } from "../lib/cosmetics"
@@ -26,6 +27,8 @@ export function Profile() {
 
   const [followActionLoading, setFollowActionLoading] = useState(false)
   const [followError, setFollowError] = useState<string | null>(null)
+  const [challengeSending, setChallengeSending] = useState<string | null>(null)
+  const [challengeSent, setChallengeSent] = useState<string | null>(null)
 
   const isOwn =
     username === "me" ||
@@ -201,46 +204,67 @@ export function Profile() {
                     key={id}
                     className="flex items-center justify-between p-3 rounded-lg bg-surface-2"
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-copper/10 flex items-center justify-center text-sm">
-                        {id === GAME_IDS.REFLEX_RUSH
-                          ? "⚡"
-                          : id === GAME_IDS.MATCH_CALL
-                            ? "⚽"
-                            : id === GAME_IDS.TRUE_OR_FALSE
-                              ? "📖"
-                              : "🧠"}
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-text">{label}</p>
-                        {!isOwn && (
-                          <span className="text-xs text-text-muted">{profile.best_scores?.[id] != null ? "Best" : "No score"}</span>
-                        )}
-                        {isOwn && (
-                          <Link
-                            to={`/play/${id}`}
-                            className="text-xs text-copper hover:underline"
-                          >
-                            Play
-                          </Link>
-                        )}
-                      </div>
-                    </div>
-                    <span className="text-lg font-heading font-bold text-copper">
-                      {profile.best_scores?.[id] ?? "—"}
-                      {id === GAME_IDS.REFLEX_RUSH && (
-                        <span className="text-xs text-text-muted ml-1">ms</span>
-                      )}
-                      {id === GAME_IDS.MATCH_CALL && (
-                        <span className="text-xs text-text-muted ml-1">correct</span>
-                      )}
-                      {id === GAME_IDS.TACTICS_DAILY && (
-                        <span className="text-xs text-text-muted ml-1">guesses</span>
-                      )}
-                      {id === GAME_IDS.TRUE_OR_FALSE && (
-                        <span className="text-xs text-text-muted ml-1">correct</span>
-                      )}
-                    </span>
+                          <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-lg bg-copper/10 flex items-center justify-center text-sm">
+                            {id === GAME_IDS.REFLEX_RUSH
+                              ? "⚡"
+                              : id === GAME_IDS.MATCH_CALL
+                                ? "⚽"
+                                : id === GAME_IDS.TRUE_OR_FALSE
+                                  ? "📖"
+                                  : "🧠"}
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-text">{label}</p>
+                            {!isOwn && (
+                              <span className="text-xs text-text-muted">{profile.best_scores?.[id] != null ? "Best" : "No score"}</span>
+                            )}
+                            {isOwn && (
+                              <Link
+                                to={`/play/${id}`}
+                                className="text-xs text-copper hover:underline"
+                              >
+                                Play
+                              </Link>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span className="text-lg font-heading font-bold text-copper">
+                            {profile.best_scores?.[id] ?? "—"}
+                            {id === GAME_IDS.REFLEX_RUSH && (
+                              <span className="text-xs text-text-muted ml-1">ms</span>
+                            )}
+                            {id === GAME_IDS.MATCH_CALL && (
+                              <span className="text-xs text-text-muted ml-1">correct</span>
+                            )}
+                            {id === GAME_IDS.TACTICS_DAILY && (
+                              <span className="text-xs text-text-muted ml-1">guesses</span>
+                            )}
+                            {id === GAME_IDS.TRUE_OR_FALSE && (
+                              <span className="text-xs text-text-muted ml-1">correct</span>
+                            )}
+                          </span>
+                          {viewingOther && ownProfile?.best_scores?.[id] != null && (
+                            <button
+                              onClick={async () => {
+                                setChallengeSending(id)
+                                setChallengeSent(null)
+                                const { error } = await useChallengeStore.getState().sendChallenge(
+                                  profile!.id,
+                                  id,
+                                  ownProfile!.best_scores![id]
+                                )
+                                setChallengeSending(null)
+                                if (!error) setChallengeSent(id)
+                              }}
+                              disabled={challengeSending === id}
+                              className="text-[11px] font-heading font-bold px-2.5 py-1 rounded-md bg-copper/10 text-copper hover:bg-copper/20 transition-colors disabled:opacity-50"
+                            >
+                              {challengeSending === id ? "..." : challengeSent === id ? "✓ Sent" : "Challenge"}
+                            </button>
+                          )}
+                        </div>
                   </div>
                 ))}
               </div>

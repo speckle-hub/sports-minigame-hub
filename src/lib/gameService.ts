@@ -2,6 +2,7 @@ import { supabase } from "./supabase"
 import { useAuthStore } from "../stores/authStore"
 import { useGameStore } from "../stores/gameStore"
 import { checkAndUnlockCosmetics } from "./unlockCosmetics"
+import { useChallengeStore } from "../stores/challengeStore"
 
 const GUEST_STORAGE_KEY = "sports-hub-guest-results"
 
@@ -145,6 +146,9 @@ export async function saveGameResult(result: GameResultPayload) {
     xpEarned: result.xpEarned,
   }).catch(console.error)
 
+  // Check and resolve pending head-to-head challenges
+  useChallengeStore.getState().checkAndResolveChallenge(user.id, result.gameId, result.score)
+
   useGameStore.getState().setLastResult({
     ...result,
     timestamp: Date.now(),
@@ -252,6 +256,9 @@ export async function saveTacticsDailyResult(result: GameResultPayload) {
     details: result.details,
     xpEarned: result.xpEarned,
   }).catch(console.error)
+
+  // Check and resolve pending head-to-head challenges
+  useChallengeStore.getState().checkAndResolveChallenge(user.id, result.gameId, result.score)
 
   useGameStore.getState().setLastResult({
     ...result,
