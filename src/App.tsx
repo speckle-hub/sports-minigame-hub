@@ -24,6 +24,8 @@ const FootballAZPage = lazy(() => import("./pages/FootballAZPage").then((m) => (
 const FootballJeopardyPage = lazy(() => import("./pages/FootballJeopardyPage").then((m) => ({ default: m.FootballJeopardyPage })))
 const TriviaPathPage = lazy(() => import("./pages/TriviaPathPage").then((m) => ({ default: m.TriviaPathPage })))
 const TicTacToeGridPage = lazy(() => import("./pages/TicTacToeGridPage").then((m) => ({ default: m.TicTacToeGridPage })))
+const GuessTheKitPage = lazy(() => import("./pages/GuessTheKitPage").then((m) => ({ default: m.GuessTheKitPage })))
+const FormationBuilderPage = lazy(() => import("./pages/FormationBuilderPage").then((m) => ({ default: m.FormationBuilderPage })))
 
 function GameSuspense({ children }: { children: React.ReactNode }) {
   return (
@@ -74,6 +76,8 @@ function AppRoutes() {
         <Route path="/play/football-jeopardy" element={<PageTransition><GameSuspense><FootballJeopardyPage /></GameSuspense></PageTransition>} />
         <Route path="/play/trivia-path" element={<PageTransition><GameSuspense><TriviaPathPage /></GameSuspense></PageTransition>} />
         <Route path="/play/tic-tac-toe-grid" element={<PageTransition><GameSuspense><TicTacToeGridPage /></GameSuspense></PageTransition>} />
+        <Route path="/play/guess-the-kit" element={<PageTransition><GameSuspense><GuessTheKitPage /></GameSuspense></PageTransition>} />
+        <Route path="/play/formation-builder" element={<PageTransition><GameSuspense><FormationBuilderPage /></GameSuspense></PageTransition>} />
         <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
       </Routes>
     </AnimatePresence>

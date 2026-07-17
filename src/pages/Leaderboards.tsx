@@ -23,6 +23,7 @@ const games = [
   { id: GAME_IDS.FOOTBALL_JEOPARDY, label: "Football Jeopardy" },
   { id: GAME_IDS.TRIVIA_PATH, label: "Trivia Path" },
   { id: GAME_IDS.TIC_TAC_TOE_GRID, label: "Tic-Tac-Toe Grid" },
+  { id: GAME_IDS.GUESS_THE_KIT, label: "Guess the Kit" },
 ]
 
 const periods = [

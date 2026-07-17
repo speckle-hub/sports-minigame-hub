@@ -1173,6 +1173,39 @@ export const TIC_TAC_TOE_GRIDS: TicTacToeGridData[] = [
 
 export const TIC_TAC_TOE_TIME_LIMIT = 90
 
+export interface KitClub {
+  name: string
+  primary: string
+  secondary: string
+  pattern: "stripes" | "hoops" | "solid" | "sash" | "quarters"
+}
+
+export const KIT_CLUBS: KitClub[] = [
+  { name: "Arsenal", primary: "#EF0107", secondary: "#FFFFFF", pattern: "solid" },
+  { name: "Barcelona", primary: "#A50044", secondary: "#004D98", pattern: "stripes" },
+  { name: "Real Madrid", primary: "#FFFFFF", secondary: "#FEBE10", pattern: "solid" },
+  { name: "Juventus", primary: "#000000", secondary: "#FFFFFF", pattern: "stripes" },
+  { name: "AC Milan", primary: "#FB090B", secondary: "#000000", pattern: "stripes" },
+  { name: "Liverpool", primary: "#C8102E", secondary: "#FFFFFF", pattern: "solid" },
+  { name: "Manchester United", primary: "#DA291C", secondary: "#FFFFFF", pattern: "solid" },
+  { name: "Chelsea", primary: "#034694", secondary: "#FFFFFF", pattern: "solid" },
+  { name: "Manchester City", primary: "#6CABDD", secondary: "#FFFFFF", pattern: "solid" },
+  { name: "Bayern Munich", primary: "#DC052D", secondary: "#FFFFFF", pattern: "solid" },
+  { name: "Paris Saint-Germain", primary: "#004170", secondary: "#DA291C", pattern: "solid" },
+  { name: "Ajax", primary: "#C8102E", secondary: "#FFFFFF", pattern: "stripes" },
+  { name: "Celtic", primary: "#00985F", secondary: "#FFFFFF", pattern: "hoops" },
+  { name: "Borussia Dortmund", primary: "#FDE100", secondary: "#000000", pattern: "stripes" },
+  { name: "Atlético Madrid", primary: "#CB3524", secondary: "#FFFFFF", pattern: "stripes" },
+  { name: "Napoli", primary: "#12A0D6", secondary: "#FFFFFF", pattern: "solid" },
+  { name: "Benfica", primary: "#E10909", secondary: "#FFFFFF", pattern: "quarters" },
+  { name: "Sporting CP", primary: "#008040", secondary: "#FFFFFF", pattern: "stripes" },
+  { name: "River Plate", primary: "#FFFFFF", secondary: "#DA291C", pattern: "sash" },
+  { name: "Boca Juniors", primary: "#004070", secondary: "#F8C300", pattern: "sash" },
+]
+
+export const KIT_ROUNDS = 5
+export const KIT_TOTAL_STAGES = 3
+
 export const SHARE_THEMES = {
   DARK: "dark",
   LIGHT: "light",
@@ -1180,3 +1213,425 @@ export const SHARE_THEMES = {
 } as const
 
 export type ShareTheme = (typeof SHARE_THEMES)[keyof typeof SHARE_THEMES]
+
+// ── Formation Builder ────────────────────────────────────────────────
+
+export interface FormationPosition {
+  pos: string
+  label: string
+  x: number // percentage from left (0-100)
+  y: number // percentage from top (0-100)
+}
+
+export interface Formation {
+  id: string
+  name: string
+  description: string
+  positions: FormationPosition[]
+}
+
+export const FORMATIONS: Formation[] = [
+  {
+    id: "4-4-2",
+    name: "4-4-2",
+    description: "Classic balanced formation",
+    positions: [
+      { pos: "GK", label: "GK", x: 50, y: 90 },
+      { pos: "LB", label: "LB", x: 15, y: 72 },
+      { pos: "CB", label: "CB", x: 38, y: 75 },
+      { pos: "CB", label: "CB", x: 62, y: 75 },
+      { pos: "RB", label: "RB", x: 85, y: 72 },
+      { pos: "LM", label: "LM", x: 15, y: 48 },
+      { pos: "CM", label: "CM", x: 38, y: 50 },
+      { pos: "CM", label: "CM", x: 62, y: 50 },
+      { pos: "RM", label: "RM", x: 85, y: 48 },
+      { pos: "ST", label: "ST", x: 38, y: 22 },
+      { pos: "ST", label: "ST", x: 62, y: 22 },
+    ],
+  },
+  {
+    id: "4-3-3",
+    name: "4-3-3",
+    description: "Attacking width with wingers",
+    positions: [
+      { pos: "GK", label: "GK", x: 50, y: 90 },
+      { pos: "LB", label: "LB", x: 15, y: 72 },
+      { pos: "CB", label: "CB", x: 38, y: 75 },
+      { pos: "CB", label: "CB", x: 62, y: 75 },
+      { pos: "RB", label: "RB", x: 85, y: 72 },
+      { pos: "CM", label: "CM", x: 30, y: 50 },
+      { pos: "CDM", label: "CDM", x: 50, y: 55 },
+      { pos: "CM", label: "CM", x: 70, y: 50 },
+      { pos: "LW", label: "LW", x: 15, y: 25 },
+      { pos: "ST", label: "ST", x: 50, y: 18 },
+      { pos: "RW", label: "RW", x: 85, y: 25 },
+    ],
+  },
+  {
+    id: "3-5-2",
+    name: "3-5-2",
+    description: "Midfield dominance with wing-backs",
+    positions: [
+      { pos: "GK", label: "GK", x: 50, y: 90 },
+      { pos: "CB", label: "CB", x: 25, y: 75 },
+      { pos: "CB", label: "CB", x: 50, y: 78 },
+      { pos: "CB", label: "CB", x: 75, y: 75 },
+      { pos: "LWB", label: "LWB", x: 10, y: 50 },
+      { pos: "CM", label: "CM", x: 35, y: 50 },
+      { pos: "CDM", label: "CDM", x: 50, y: 55 },
+      { pos: "CM", label: "CM", x: 65, y: 50 },
+      { pos: "RWB", label: "RWB", x: 90, y: 50 },
+      { pos: "ST", label: "ST", x: 38, y: 22 },
+      { pos: "ST", label: "ST", x: 62, y: 22 },
+    ],
+  },
+  {
+    id: "4-2-3-1",
+    name: "4-2-3-1",
+    description: "Fluid attack with double pivot",
+    positions: [
+      { pos: "GK", label: "GK", x: 50, y: 90 },
+      { pos: "LB", label: "LB", x: 15, y: 72 },
+      { pos: "CB", label: "CB", x: 38, y: 75 },
+      { pos: "CB", label: "CB", x: 62, y: 75 },
+      { pos: "RB", label: "RB", x: 85, y: 72 },
+      { pos: "CDM", label: "CDM", x: 38, y: 55 },
+      { pos: "CDM", label: "CDM", x: 62, y: 55 },
+      { pos: "LAM", label: "LAM", x: 20, y: 38 },
+      { pos: "CAM", label: "CAM", x: 50, y: 40 },
+      { pos: "RAM", label: "RAM", x: 80, y: 38 },
+      { pos: "ST", label: "ST", x: 50, y: 18 },
+    ],
+  },
+  {
+    id: "3-4-3",
+    name: "3-4-3",
+    description: "Aggressive width and pressing",
+    positions: [
+      { pos: "GK", label: "GK", x: 50, y: 90 },
+      { pos: "CB", label: "CB", x: 25, y: 75 },
+      { pos: "CB", label: "CB", x: 50, y: 78 },
+      { pos: "CB", label: "CB", x: 75, y: 75 },
+      { pos: "LM", label: "LM", x: 15, y: 50 },
+      { pos: "CM", label: "CM", x: 40, y: 52 },
+      { pos: "CM", label: "CM", x: 60, y: 52 },
+      { pos: "RM", label: "RM", x: 85, y: 50 },
+      { pos: "LW", label: "LW", x: 18, y: 25 },
+      { pos: "ST", label: "ST", x: 50, y: 18 },
+      { pos: "RW", label: "RW", x: 82, y: 25 },
+    ],
+  },
+  {
+    id: "5-3-2",
+    name: "5-3-2",
+    description: "Solid defense with counter-attack",
+    positions: [
+      { pos: "GK", label: "GK", x: 50, y: 90 },
+      { pos: "LWB", label: "LWB", x: 10, y: 55 },
+      { pos: "CB", label: "CB", x: 28, y: 75 },
+      { pos: "CB", label: "CB", x: 50, y: 78 },
+      { pos: "CB", label: "CB", x: 72, y: 75 },
+      { pos: "RWB", label: "RWB", x: 90, y: 55 },
+      { pos: "CM", label: "CM", x: 35, y: 48 },
+      { pos: "CM", label: "CM", x: 50, y: 52 },
+      { pos: "CM", label: "CM", x: 65, y: 48 },
+      { pos: "ST", label: "ST", x: 38, y: 22 },
+      { pos: "ST", label: "ST", x: 62, y: 22 },
+    ],
+  },
+  {
+    id: "4-1-4-1",
+    name: "4-1-4-1",
+    description: "Compact midfield with single striker",
+    positions: [
+      { pos: "GK", label: "GK", x: 50, y: 90 },
+      { pos: "LB", label: "LB", x: 15, y: 72 },
+      { pos: "CB", label: "CB", x: 38, y: 75 },
+      { pos: "CB", label: "CB", x: 62, y: 75 },
+      { pos: "RB", label: "RB", x: 85, y: 72 },
+      { pos: "CDM", label: "CDM", x: 50, y: 58 },
+      { pos: "LM", label: "LM", x: 15, y: 42 },
+      { pos: "CM", label: "CM", x: 38, y: 45 },
+      { pos: "CM", label: "CM", x: 62, y: 45 },
+      { pos: "RM", label: "RM", x: 85, y: 42 },
+      { pos: "ST", label: "ST", x: 50, y: 18 },
+    ],
+  },
+  {
+    id: "4-4-1-1",
+    name: "4-4-1-1",
+    description: "Classic with a second striker",
+    positions: [
+      { pos: "GK", label: "GK", x: 50, y: 90 },
+      { pos: "LB", label: "LB", x: 15, y: 72 },
+      { pos: "CB", label: "CB", x: 38, y: 75 },
+      { pos: "CB", label: "CB", x: 62, y: 75 },
+      { pos: "RB", label: "RB", x: 85, y: 72 },
+      { pos: "LM", label: "LM", x: 15, y: 48 },
+      { pos: "CM", label: "CM", x: 38, y: 50 },
+      { pos: "CM", label: "CM", x: 62, y: 50 },
+      { pos: "RM", label: "RM", x: 85, y: 48 },
+      { pos: "CF", label: "CF", x: 50, y: 30 },
+      { pos: "ST", label: "ST", x: 50, y: 18 },
+    ],
+  },
+]
+
+export interface HistoricLineupPlayer {
+  name: string
+  position: string
+  // optional override for search; defaults to name
+  searchName?: string
+}
+
+export interface HistoricLineup {
+  id: string
+  team: string
+  year: string
+  formation: string
+  label: string
+  players: HistoricLineupPlayer[]
+}
+
+export const HISTORIC_LINEUPS: HistoricLineup[] = [
+  {
+    id: "barca-2009",
+    team: "Barcelona",
+    year: "2009",
+    formation: "4-3-3",
+    label: "Barcelona 2009 — Sextuple",
+    players: [
+      { name: "Victor Valdes", position: "GK" },
+      { name: "Dani Alves", position: "RB" },
+      { name: "Gerard Piqué", position: "CB" },
+      { name: "Carles Puyol", position: "CB" },
+      { name: "Eric Abidal", position: "LB" },
+      { name: "Sergio Busquets", position: "CDM" },
+      { name: "Xavi Hernandez", position: "CM" },
+      { name: "Andres Iniesta", position: "CM" },
+      { name: "Lionel Messi", position: "RW" },
+      { name: "Samuel Eto'o", position: "ST" },
+      { name: "Thierry Henry", position: "LW" },
+    ],
+  },
+  {
+    id: "real-madrid-2017",
+    team: "Real Madrid",
+    year: "2017",
+    formation: "4-3-3",
+    label: "Real Madrid 2017 — La Décima",
+    players: [
+      { name: "Keylor Navas", position: "GK" },
+      { name: "Dani Carvajal", position: "RB" },
+      { name: "Sergio Ramos", position: "CB" },
+      { name: "Raphael Varane", position: "CB" },
+      { name: "Marcelo", position: "LB" },
+      { name: "Casemiro", position: "CDM" },
+      { name: "Luka Modric", position: "CM" },
+      { name: "Toni Kroos", position: "CM" },
+      { name: "Isco", position: "RW" },
+      { name: "Karim Benzema", position: "ST" },
+      { name: "Cristiano Ronaldo", position: "LW" },
+    ],
+  },
+  {
+    id: "liverpool-2005",
+    team: "Liverpool",
+    year: "2005",
+    formation: "4-4-1-1",
+    label: "Liverpool 2005 — Istanbul Miracle",
+    players: [
+      { name: "Jerzy Dudek", position: "GK" },
+      { name: "Steve Finnan", position: "RB" },
+      { name: "Jamie Carragher", position: "CB" },
+      { name: "Sami Hyypia", position: "CB" },
+      { name: "John Arne Riise", position: "LB" },
+      { name: "Steven Gerrard", position: "CM" },
+      { name: "Xabi Alonso", position: "CM" },
+      { name: "Luis Garcia", position: "RM" },
+      { name: "Harry Kewell", position: "LM" },
+      { name: "Milan Baros", position: "CF" },
+      { name: "Djibril Cisse", position: "ST" },
+    ],
+  },
+  {
+    id: "man-utd-1999",
+    team: "Manchester United",
+    year: "1999",
+    formation: "4-4-2",
+    label: "Man United 1999 — Treble Winners",
+    players: [
+      { name: "Peter Schmeichel", position: "GK" },
+      { name: "Gary Neville", position: "RB" },
+      { name: "Ronny Johnsen", position: "CB" },
+      { name: "Jaap Stam", position: "CB" },
+      { name: "Denis Irwin", position: "LB" },
+      { name: "David Beckham", position: "RM" },
+      { name: "Roy Keane", position: "CM" },
+      { name: "Paul Scholes", position: "CM" },
+      { name: "Ryan Giggs", position: "LM" },
+      { name: "Andy Cole", position: "ST" },
+      { name: "Dwight Yorke", position: "ST" },
+    ],
+  },
+  {
+    id: "ac-milan-2007",
+    team: "AC Milan",
+    year: "2007",
+    formation: "4-3-2-1",
+    label: "AC Milan 2007 — Champions League",
+    players: [
+      { name: "Gianluigi Buffon", position: "GK", searchName: "Gianluigi Buffon Milan" },
+      { name: "Cafu", position: "RB" },
+      { name: "Paolo Maldini", position: "CB" },
+      { name: "Alessandro Nesta", position: "CB" },
+      { name: "Filippo Inzaghi", position: "LW" },
+      { name: "Gennaro Gattuso", position: "CM" },
+      { name: "Andrea Pirlo", position: "CM" },
+      { name: "Clarence Seedorf", position: "CM" },
+      { name: "Kaka", position: "CF" },
+      { name: "Andriy Shevchenko", position: "ST" },
+      { name: "Massimo Oddo", position: "LB" },
+    ],
+  },
+  {
+    id: "brazil-1970",
+    team: "Brazil",
+    year: "1970",
+    formation: "4-3-3",
+    label: "Brazil 1970 — The Beautiful Team",
+    players: [
+      { name: "Felix", position: "GK" },
+      { name: "Carlos Alberto", position: "RB" },
+      { name: "Brito", position: "CB" },
+      { name: "Wilson Piazza", position: "CB" },
+      { name: "Everaldo", position: "LB" },
+      { name: "Gerson", position: "CM" },
+      { name: "Clodoaldo", position: "CM" },
+      { name: "Rivellino", position: "CM" },
+      { name: "Jairzinho", position: "RW" },
+      { name: "Tostao", position: "ST" },
+      { name: "Pele", position: "LW" },
+    ],
+  },
+  {
+    id: "ajax-1972",
+    team: "Ajax",
+    year: "1972",
+    formation: "4-3-3",
+    label: "Ajax 1972 — Total Football",
+    players: [
+      { name: "Heinz Stuy", position: "GK" },
+      { name: "Wim Suurbier", position: "RB" },
+      { name: "Barry Hulshoff", position: "CB" },
+      { name: "Ruud Krol", position: "CB" },
+      { name: "Wim Jansen", position: "LB" },
+      { name: "Johan Neeskens", position: "CM" },
+      { name: "Johan Cruyff", position: "CF" },
+      { name: "Arie Haan", position: "CM" },
+      { name: "Johnny Rep", position: "RW" },
+      { name: "Dick van Dijk", position: "ST" },
+      { name: "Piet Keizer", position: "LW" },
+    ],
+  },
+  {
+    id: "italy-2006",
+    team: "Italy",
+    year: "2006",
+    formation: "4-3-3",
+    label: "Italy 2006 — World Cup Champions",
+    players: [
+      { name: "Gianluigi Buffon", position: "GK" },
+      { name: "Gianluca Zambrotta", position: "RB" },
+      { name: "Fabio Cannavaro", position: "CB" },
+      { name: "Marco Materazzi", position: "CB" },
+      { name: "Fabio Grosso", position: "LB" },
+      { name: "Gennaro Gattuso", position: "CM" },
+      { name: "Andrea Pirlo", position: "CM" },
+      { name: "Francesco Totti", position: "CM" },
+      { name: "Luca Toni", position: "ST" },
+      { name: "Filippo Inzaghi", position: "ST" },
+      { name: "Simone Perrotta", position: "LW" },
+    ],
+  },
+  {
+    id: "germany-2014",
+    team: "Germany",
+    year: "2014",
+    formation: "4-3-3",
+    label: "Germany 2014 — World Cup Winners",
+    players: [
+      { name: "Manuel Neuer", position: "GK" },
+      { name: "Philipp Lahm", position: "RB" },
+      { name: "Mats Hummels", position: "CB" },
+      { name: "Jerome Boateng", position: "CB" },
+      { name: "Benedikt Howedes", position: "LB" },
+      { name: "Bastian Schweinsteiger", position: "CM" },
+      { name: "Toni Kroos", position: "CM" },
+      { name: "Sami Khedira", position: "CM" },
+      { name: "Mesut Ozil", position: "RW" },
+      { name: "Miroslav Klose", position: "ST" },
+      { name: "Thomas Muller", position: "LW" },
+    ],
+  },
+  {
+    id: "arsenal-2004",
+    team: "Arsenal",
+    year: "2004",
+    formation: "4-4-2",
+    label: "Arsenal 2004 — Invincibles",
+    players: [
+      { name: "Jens Lehmann", position: "GK" },
+      { name: "Lauren", position: "RB" },
+      { name: "Sol Campbell", position: "CB" },
+      { name: "Kolo Toure", position: "CB" },
+      { name: "Ashley Cole", position: "LB" },
+      { name: "Robert Pires", position: "RM" },
+      { name: "Patrick Vieira", position: "CM" },
+      { name: "Gilberto Silva", position: "CM" },
+      { name: "Freddie Ljungberg", position: "LM" },
+      { name: "Thierry Henry", position: "ST" },
+      { name: "Dennis Bergkamp", position: "ST" },
+    ],
+  },
+  {
+    id: "france-1998",
+    team: "France",
+    year: "1998",
+    formation: "4-3-3",
+    label: "France 1998 — World Cup on Home Soil",
+    players: [
+      { name: "Fabien Barthez", position: "GK" },
+      { name: "Lilian Thuram", position: "RB" },
+      { name: "Marcel Desailly", position: "CB" },
+      { name: "Laurent Blanc", position: "CB" },
+      { name: "Bixente Lizarazu", position: "LB" },
+      { name: "Didier Deschamps", position: "CM" },
+      { name: "Emmanuel Petit", position: "CM" },
+      { name: "Zinedine Zidane", position: "CM" },
+      { name: "Youri Djorkaeff", position: "RW" },
+      { name: "Stéphane Guivarc'h", position: "ST" },
+      { name: "Thierry Henry", position: "LW" },
+    ],
+  },
+  {
+    id: "inter-2010",
+    team: "Inter Milan",
+    year: "2010",
+    formation: "4-2-3-1",
+    label: "Inter Milan 2010 — Treble Winners",
+    players: [
+      { name: "Julio Cesar", position: "GK" },
+      { name: "Maicon", position: "RB" },
+      { name: "Ivan Cordoba", position: "CB" },
+      { name: "Walter Samuel", position: "CB" },
+      { name: "Luis Figo", position: "LW" },
+      { name: "Esteban Cambiasso", position: "CDM" },
+      { name: "Wesley Sneijder", position: "CAM" },
+      { name: "Dejan Stankovic", position: "CM" },
+      { name: "Samuel Eto'o", position: "RW" },
+      { name: "Diego Milito", position: "ST" },
+      { name: "Javier Zanetti", position: "LB" },
+    ],
+  },
+]

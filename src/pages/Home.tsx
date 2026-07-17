@@ -61,6 +61,16 @@ const games = [
     icon: "🎮",
     color: "from-pitch-light to-copper",
   },
+  {
+    id: GAME_IDS.GUESS_THE_KIT,
+    icon: "👕",
+    color: "from-copper to-pitch-light",
+  },
+  {
+    id: GAME_IDS.FORMATION_BUILDER,
+    icon: "⚽",
+    color: "from-pitch to-emerald-800",
+  },
 ]
 
 interface TopPlayer {
@@ -199,7 +209,7 @@ export function Home() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
           >
-            Nine games. One legacy. Play, earn XP, climb the leaderboard.
+            Eleven games. One legacy. Play, earn XP, climb the leaderboard.
           </motion.p>
 
           <motion.div

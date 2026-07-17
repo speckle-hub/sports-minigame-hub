@@ -34,6 +34,8 @@ export const GAME_IDS = {
   FOOTBALL_JEOPARDY: "football-jeopardy",
   TRIVIA_PATH: "trivia-path",
   TIC_TAC_TOE_GRID: "tic-tac-toe-grid",
+  GUESS_THE_KIT: "guess-the-kit",
+  FORMATION_BUILDER: "formation-builder",
 } as const
 
 export type GameId = (typeof GAME_IDS)[keyof typeof GAME_IDS]
@@ -48,6 +50,8 @@ export const GAME_LABELS: Record<GameId, string> = {
   "football-jeopardy": "Football Jeopardy",
   "trivia-path": "Trivia Path",
   "tic-tac-toe-grid": "Tic-Tac-Toe Grid",
+  "guess-the-kit": "Guess the Kit",
+  "formation-builder": "Formation Builder",
 }
 
 export const GAME_DESCRIPTIONS: Record<GameId, string> = {
@@ -60,6 +64,8 @@ export const GAME_DESCRIPTIONS: Record<GameId, string> = {
   "football-jeopardy": "Pick categories and test your football knowledge.",
   "trivia-path": "Answer trivia questions along the path to victory.",
   "tic-tac-toe-grid": "Fill the grid with players matching row and column criteria.",
+  "guess-the-kit": "Identify the club from a zoomed-in kit illustration. Fewer reveals = more points!",
+  "formation-builder": "Build your dream XI. Search players or explore historic lineups on a live pitch.",
 }
 
 export const AVATAR_GRADIENTS = [
