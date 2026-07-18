@@ -15,6 +15,18 @@ import { searchPlayers, getPhotoUrl } from "../../lib/thesportsdb"
 
 type Mode = "custom" | "historic"
 
+// SVG viewBox is 0 0 300 400; pitch border is inset 8px.
+// Map 0-100 position coordinates to the actual pitch playing area.
+const PITCH_VIEWBOX_W = 300
+const PITCH_VIEWBOX_H = 400
+const PITCH_BORDER = 8
+const PITCH_AREA_W = PITCH_VIEWBOX_W - PITCH_BORDER * 2 // 284
+const PITCH_AREA_H = PITCH_VIEWBOX_H - PITCH_BORDER * 2 // 384
+const PITCH_LEFT_PCT = (PITCH_BORDER / PITCH_VIEWBOX_W) * 100 // 2.667%
+const PITCH_TOP_PCT = (PITCH_BORDER / PITCH_VIEWBOX_H) * 100 // 2%
+const PITCH_WIDTH_PCT = (PITCH_AREA_W / PITCH_VIEWBOX_W) * 100 // 94.667%
+const PITCH_HEIGHT_PCT = (PITCH_AREA_H / PITCH_VIEWBOX_H) * 100 // 96%
+
 interface DragState {
   player: SportsDBPlayer
   sourceIndex: number // -1 = pool, 0..n = slot
@@ -369,14 +381,12 @@ export function FormationBuilder() {
               ref={(el) => { slotRefs.current[i] = el }}
               className="absolute"
               style={{
-                left: `${pos.x}%`,
-                top: `${pos.y}%`,
+                left: `${PITCH_LEFT_PCT + (pos.x * PITCH_WIDTH_PCT) / 100}%`,
+                top: `${PITCH_TOP_PCT + (pos.y * PITCH_HEIGHT_PCT) / 100}%`,
                 transform: "translate(-50%, -50%)",
               }}
             >
               <PositionSlot
-                x={0}
-                y={0}
                 label={pos.label}
                 player={slotPlayers[i] || null}
                 isDropTarget={hoverSlot === i}

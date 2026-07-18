@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react"
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom"
 import { AnimatePresence, motion } from "framer-motion"
 import { Navbar } from "./components/ui/Navbar"
+import { ToastContainer } from "./components/ui/ToastContainer"
 import { AuthProvider } from "./components/AuthProvider"
 import { MilestoneWatcher } from "./components/MilestoneWatcher"
 import { Onboarding } from "./components/Onboarding"
@@ -91,6 +92,7 @@ export default function App() {
         <MilestoneWatcher />
         <Onboarding />
         <Navbar />
+        <ToastContainer />
         <ErrorBoundary>
           <AppRoutes />
         </ErrorBoundary>

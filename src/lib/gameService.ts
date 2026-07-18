@@ -1,8 +1,10 @@
 import { supabase } from "./supabase"
 import { useAuthStore } from "../stores/authStore"
 import { useGameStore } from "../stores/gameStore"
+import { useToastStore } from "../stores/toastStore"
 import { checkAndUnlockCosmetics } from "./unlockCosmetics"
 import { useChallengeStore } from "../stores/challengeStore"
+import { GAME_LABELS } from "./utils"
 import type { Profile } from "../stores/authStore"
 
 const GUEST_STORAGE_KEY = "sports-hub-guest-results"
@@ -106,6 +108,11 @@ export async function saveGameResult(result: GameResultPayload) {
       ...result,
       timestamp: Date.now(),
     })
+    useToastStore.getState().addToast({
+      type: "success",
+      title: `🎮 ${GAME_LABELS[result.gameId as keyof typeof GAME_LABELS] || result.gameId}`,
+      description: `${result.score} pts · +${result.xpEarned} XP`,
+    })
     return
   }
 
@@ -154,6 +161,11 @@ export async function saveGameResult(result: GameResultPayload) {
     ...result,
     timestamp: Date.now(),
   })
+  useToastStore.getState().addToast({
+    type: "success",
+    title: `🎮 ${GAME_LABELS[result.gameId as keyof typeof GAME_LABELS] || result.gameId}`,
+    description: `${result.score} pts · +${result.xpEarned} XP`,
+  })
 }
 
 export async function saveTacticsDailyResult(result: GameResultPayload) {
@@ -185,6 +197,11 @@ export async function saveTacticsDailyResult(result: GameResultPayload) {
     useGameStore.getState().setLastResult({
       ...result,
       timestamp: Date.now(),
+    })
+    useToastStore.getState().addToast({
+      type: "success",
+      title: `🎮 ${GAME_LABELS[result.gameId as keyof typeof GAME_LABELS] || result.gameId}`,
+      description: `${result.score} pts · +${result.xpEarned} XP`,
     })
     return
   }
@@ -264,5 +281,10 @@ export async function saveTacticsDailyResult(result: GameResultPayload) {
   useGameStore.getState().setLastResult({
     ...result,
     timestamp: Date.now(),
+  })
+  useToastStore.getState().addToast({
+    type: "success",
+    title: `🎮 ${GAME_LABELS[result.gameId as keyof typeof GAME_LABELS] || result.gameId}`,
+    description: `${result.score} pts · +${result.xpEarned} XP`,
   })
 }

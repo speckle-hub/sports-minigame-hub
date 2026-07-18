@@ -3,8 +3,6 @@ import type { SportsDBPlayer } from "../../lib/thesportsdb"
 import { getPhotoUrl } from "../../lib/thesportsdb"
 
 interface PositionSlotProps {
-  x: number
-  y: number
   label: string
   player: SportsDBPlayer | null
   isDropTarget: boolean
@@ -13,8 +11,6 @@ interface PositionSlotProps {
 }
 
 export function PositionSlot({
-  x,
-  y,
   label,
   player,
   isDropTarget,
@@ -27,8 +23,8 @@ export function PositionSlot({
     <motion.div
       className="absolute flex flex-col items-center gap-0.5"
       style={{
-        left: `${x}%`,
-        top: `${y}%`,
+        left: "0%",
+        top: "0%",
         transform: "translate(-50%, -50%)",
         touchAction: "none",
       }}

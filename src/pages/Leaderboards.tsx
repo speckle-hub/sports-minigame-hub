@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 import { useNavigate } from "react-router-dom"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence, LayoutGroup } from "framer-motion"
 import { Card, CardTitle, CardHeader, CardContent } from "../components/ui/Card"
 import { Button } from "../components/ui/Button"
 import { Input } from "../components/ui/Input"
@@ -78,6 +78,11 @@ export function Leaderboards() {
     return () => clearTimeout(timer)
   }, [searchQuery])
 
+  const topScore = useMemo(() =>
+    entries.length > 0 ? Math.max(...entries.map((e) => e.score)) : 0,
+    [entries]
+  )
+
   const emptyMessage =
     selectedFilter === "friends"
       ? {
@@ -108,47 +113,71 @@ export function Leaderboards() {
             <h1 className="text-3xl font-heading font-bold text-text">
               Leaderboards
             </h1>
-            <div className="flex gap-2">
-              {/* Filter: Global / Friends */}
-              <div className="flex gap-1 bg-surface-2 rounded-lg p-1">
-                <button
-                  onClick={() => setFilter("global")}
-                  className={cn(
-                    "px-3 py-1.5 text-sm font-medium rounded-md transition-colors",
-                    selectedFilter === "global"
-                      ? "bg-copper text-base"
-                      : "text-text-muted hover:text-text"
-                  )}
-                >
-                  Global
-                </button>
-                <button
-                  onClick={() => setFilter("friends")}
-                  className={cn(
-                    "px-3 py-1.5 text-sm font-medium rounded-md transition-colors",
-                    selectedFilter === "friends"
-                      ? "bg-copper text-base"
-                      : "text-text-muted hover:text-text"
-                  )}
-                >
-                  Friends
-                </button>
+            <LayoutGroup id="leaderboard-filters">
+              <div className="flex gap-3 items-center">
+                <div className="flex gap-1 bg-surface-2 rounded-lg p-1 relative">
+                  <button
+                    onClick={() => setFilter("global")}
+                    className={cn(
+                      "relative px-3 py-1.5 text-sm font-medium rounded-md transition-colors z-10",
+                      selectedFilter === "global"
+                        ? "text-base"
+                        : "text-text-muted hover:text-text"
+                    )}
+                  >
+                    {selectedFilter === "global" && (
+                      <motion.div
+                        layoutId="filter-indicator"
+                        className="absolute inset-0 bg-copper rounded-md"
+                        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                      />
+                    )}
+                    <span className="relative z-10">Global</span>
+                  </button>
+                  <button
+                    onClick={() => setFilter("friends")}
+                    className={cn(
+                      "relative px-3 py-1.5 text-sm font-medium rounded-md transition-colors z-10",
+                      selectedFilter === "friends"
+                        ? "text-base"
+                        : "text-text-muted hover:text-text"
+                    )}
+                  >
+                    {selectedFilter === "friends" && (
+                      <motion.div
+                        layoutId="filter-indicator"
+                        className="absolute inset-0 bg-copper rounded-md"
+                        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                      />
+                    )}
+                    <span className="relative z-10">Friends</span>
+                  </button>
+                </div>
+                <div className="flex gap-1 bg-surface-2 rounded-lg p-1 relative">
+                  {periods.map((p) => (
+                    <button
+                      key={p.id}
+                      onClick={() => setPeriod(p.id)}
+                      className={cn(
+                        "relative px-3 py-1.5 text-sm font-medium rounded-md transition-colors z-10",
+                        selectedPeriod === p.id
+                          ? "text-base"
+                          : "text-text-muted hover:text-text"
+                      )}
+                    >
+                      {selectedPeriod === p.id && (
+                        <motion.div
+                          layoutId="period-indicator"
+                          className="absolute inset-0 bg-copper rounded-md"
+                          transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                        />
+                      )}
+                      <span className="relative z-10">{p.label}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
-              {periods.map((p) => (
-                <button
-                  key={p.id}
-                  onClick={() => setPeriod(p.id)}
-                  className={cn(
-                    "px-4 py-2 text-sm font-medium rounded-lg transition-colors",
-                    selectedPeriod === p.id
-                      ? "bg-copper text-base"
-                      : "bg-surface-2 text-text-muted hover:text-text"
-                  )}
-                >
-                  {p.label}
-                </button>
-              ))}
-            </div>
+            </LayoutGroup>
           </div>
 
           {selectedPeriod === "weekly" && (
@@ -224,20 +253,29 @@ export function Leaderboards() {
           </div>
 
           <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
-            {games.map((g) => (
-              <button
-                key={g.id}
-                onClick={() => setGame(g.id)}
-                className={cn(
-                  "px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap transition-colors",
-                  selectedGame === g.id
-                    ? "bg-surface-2 text-text border border-copper/30"
-                    : "bg-surface-3/50 text-text-muted hover:text-text"
-                )}
-              >
-                {g.label}
-              </button>
-            ))}
+            <LayoutGroup id="game-filters">
+              {games.map((g) => (
+                <button
+                  key={g.id}
+                  onClick={() => setGame(g.id)}
+                  className={cn(
+                    "relative px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap transition-colors",
+                    selectedGame === g.id
+                      ? "text-text border border-copper/30"
+                      : "bg-surface-3/50 text-text-muted hover:text-text"
+                  )}
+                >
+                  {selectedGame === g.id && (
+                    <motion.div
+                      layoutId="game-indicator"
+                      className="absolute inset-0 bg-surface-2 rounded-lg"
+                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                    />
+                  )}
+                  <span className="relative z-10">{g.label}</span>
+                </button>
+              ))}
+            </LayoutGroup>
           </div>
 
           <Card>
@@ -282,7 +320,7 @@ export function Leaderboards() {
                     exit={{ opacity: 0 }}
                     className="space-y-1"
                   >
-                    <div className="grid grid-cols-[40px_1fr_80px] gap-3 px-3 py-2 text-xs text-text-muted uppercase tracking-wider font-medium">
+                    <div className="grid grid-cols-[40px_1fr_120px] gap-3 px-3 py-2 text-xs text-text-muted uppercase tracking-wider font-medium">
                       <span>Rank</span>
                       <span>Player</span>
                       <span className="text-right">Score</span>
@@ -293,7 +331,7 @@ export function Leaderboards() {
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: i * 0.03 }}
-                        className="grid grid-cols-[40px_1fr_80px] gap-3 items-center p-3 rounded-lg hover:bg-surface-2 transition-colors cursor-pointer"
+                        className="grid grid-cols-[40px_1fr_120px] gap-3 items-center p-3 rounded-lg hover:bg-surface-2 transition-colors cursor-pointer"
                         onClick={() => navigate(`/profile/${entry.username}`)}
                       >
                         <span
@@ -318,9 +356,21 @@ export function Leaderboards() {
                             )}
                           </span>
                         </div>
-                        <span className="text-sm font-heading font-bold text-copper text-right">
-                          {entry.score}
-                        </span>
+                        <div className="text-right">
+                          <span className="text-sm font-heading font-bold text-copper">
+                            {entry.score}
+                          </span>
+                          {topScore > 0 && (
+                            <div className="h-[3px] rounded-full bg-surface-3/50 mt-1.5 overflow-hidden">
+                              <motion.div
+                                initial={{ width: 0 }}
+                                animate={{ width: `${(entry.score / topScore) * 100}%` }}
+                                transition={{ delay: i * 0.03 + 0.2, duration: 0.5, ease: "easeOut" }}
+                                className="h-full rounded-full bg-copper"
+                              />
+                            </div>
+                          )}
+                        </div>
                       </motion.div>
                     ))}
                   </motion.div>

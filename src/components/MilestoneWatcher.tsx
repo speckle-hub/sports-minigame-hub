@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react"
 import { useAuthStore } from "../stores/authStore"
+import { useToastStore } from "../stores/toastStore"
 import { calculateLevel } from "../lib/utils"
 import { sfxLevelUp, sfxStreak } from "../lib/sound"
 import { checkAndUnlockCosmetics } from "../lib/unlockCosmetics"
@@ -18,11 +19,23 @@ export function MilestoneWatcher() {
     const newLevel = calculateLevel(profile.total_xp)
     if (prevLevelRef.current > 0 && newLevel > prevLevelRef.current) {
       sfxLevelUp()
+      useToastStore.getState().addToast({
+        type: "success",
+        title: `⬆️ Level Up!`,
+        description: `You've reached Level ${newLevel}`,
+        duration: 5000,
+      })
     }
     prevLevelRef.current = newLevel
 
     if (STREAK_MILESTONES.includes(profile.current_streak) && profile.current_streak > prevStreakRef.current) {
       sfxStreak()
+      useToastStore.getState().addToast({
+        type: "success",
+        title: `🔥 ${profile.current_streak}-Day Streak!`,
+        description: "Keep it going!",
+        duration: 5000,
+      })
     }
     prevStreakRef.current = profile.current_streak
   }, [profile, profile?.total_xp, profile?.current_streak])

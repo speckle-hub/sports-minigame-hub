@@ -17,6 +17,12 @@ import {
 
 const games = [
   {
+    id: GAME_IDS.TACTICS_DAILY,
+    icon: "🧠",
+    color: "from-pitch to-pitch-light",
+    featured: true,
+  },
+  {
     id: GAME_IDS.REFLEX_RUSH,
     icon: "⚡",
     color: "from-copper to-gold",
@@ -25,11 +31,6 @@ const games = [
     id: GAME_IDS.MATCH_CALL,
     icon: "🎯",
     color: "from-gold to-copper",
-  },
-  {
-    id: GAME_IDS.TACTICS_DAILY,
-    icon: "🧠",
-    color: "from-pitch to-pitch-light",
   },
   {
     id: GAME_IDS.TRUE_OR_FALSE,
@@ -193,36 +194,74 @@ export function Home() {
   return (
     <div className="min-h-screen pt-24">
       <div className="max-w-6xl mx-auto px-4">
-        <section className="text-center mb-16">
-          <motion.h1
-            className="text-5xl sm:text-7xl font-heading font-bold text-text mb-4"
-            initial={{ opacity: 0, y: -30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ type: "spring", stiffness: 200, damping: 20 }}
-          >
-            Your{" "}
-            <span className="text-gradient">Sports</span> Arena
-          </motion.h1>
-          <motion.p
-            className="text-lg text-text-muted max-w-xl mx-auto mb-8"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-          >
-            Eleven games. One legacy. Play, earn XP, climb the leaderboard.
-          </motion.p>
+        <section className="relative text-center mb-16 overflow-hidden">
+          {/* Animated gradient orbs */}
+          <div className="absolute inset-0 pointer-events-none select-none">
+            <motion.div
+              className="absolute -top-1/4 -left-1/4 w-3/4 h-3/4 rounded-full opacity-[0.08]"
+              style={{
+                background:
+                  "radial-gradient(circle, rgba(255,107,53,1) 0%, transparent 70%)",
+              }}
+              animate={{
+                x: [0, 60, 0, -40, 0],
+                y: [0, -40, 30, 0, 0],
+              }}
+              transition={{
+                duration: 20,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
+            <motion.div
+              className="absolute -bottom-1/4 -right-1/4 w-3/4 h-3/4 rounded-full opacity-[0.06]"
+              style={{
+                background:
+                  "radial-gradient(circle, rgba(45,106,79,1) 0%, transparent 70%)",
+              }}
+              animate={{
+                x: [0, -50, 20, 40, 0],
+                y: [0, 30, -40, 0, 0],
+              }}
+              transition={{
+                duration: 25,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-          >
-            <Link to={`/play/${GAME_IDS.TACTICS_DAILY}`}>
-              <Button size="lg" className="text-base">
-                Today's Challenge →
-              </Button>
-            </Link>
-          </motion.div>
+          <div className="relative z-10">
+            <motion.h1
+              className="text-5xl sm:text-7xl font-heading font-bold text-text mb-4"
+              initial={{ opacity: 0, y: -30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ type: "spring", stiffness: 200, damping: 20 }}
+            >
+              Your{" "}
+              <span className="text-gradient">Sports</span> Arena
+            </motion.h1>
+            <motion.p
+              className="text-lg text-text-muted max-w-xl mx-auto mb-8"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+            >
+              Eleven games. One legacy. Play, earn XP, climb the leaderboard.
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              <Link to={`/play/${GAME_IDS.TACTICS_DAILY}`}>
+                <Button size="lg" className="text-base">
+                  Today's Challenge →
+                </Button>
+              </Link>
+            </motion.div>
+          </div>
         </section>
 
         {!isGuest && profile && (
@@ -251,13 +290,30 @@ export function Home() {
               </div>
               <XPBar xp={profile.total_xp} />
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
-                <StatCard label="Total XP" value={profile.total_xp} />
+                <StatCard
+                  label="Total XP"
+                  value={profile.total_xp}
+                  icon="⚡"
+                  iconBg="from-copper to-gold"
+                />
                 <StatCard
                   label="Longest Streak"
                   value={`${profile.longest_streak} days`}
+                  icon="🔥"
+                  iconBg="from-copper to-streak"
                 />
-                <StatCard label="Level" value={level} />
-                <StatCard label="Games Played" value={Object.keys(profile.best_scores || {}).length} />
+                <StatCard
+                  label="Level"
+                  value={level}
+                  icon="🏆"
+                  iconBg="from-gold to-copper"
+                />
+                <StatCard
+                  label="Games Played"
+                  value={Object.keys(profile.best_scores || {}).length}
+                  icon="🎮"
+                  iconBg="from-pitch-light to-pitch"
+                />
               </div>
             </Card>
           </motion.section>
@@ -268,36 +324,47 @@ export function Home() {
             Play Games
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {games.map((game, i) => (
-              <motion.div
-                key={game.id}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 + i * 0.1 }}
-              >
-                <Link to={`/play/${game.id}`}>
-                  <Card
-                    variant="highlight"
-                    className="group cursor-pointer hover:border-copper/40 transition-colors h-full"
-                  >
-                    <CardContent>
-                      <div
-                        className={`w-12 h-12 rounded-xl bg-gradient-to-br ${game.color} flex items-center justify-center text-2xl mb-4`}
-                      >
-                        {game.icon}
-                      </div>
-                      <CardTitle>{GAME_LABELS[game.id]}</CardTitle>
-                      <p className="text-sm text-text-muted mt-1">
-                        {GAME_DESCRIPTIONS[game.id]}
-                      </p>
-                      <div className="mt-4 flex items-center text-copper text-sm font-heading font-bold group-hover:gap-2 transition-all">
-                        Play Now →
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              </motion.div>
-            ))}
+            {games.map((game, i) => {
+              const isFeatured = "featured" in game && game.featured
+              return (
+                <motion.div
+                  key={game.id}
+                  className={isFeatured ? "lg:col-span-2" : ""}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 + i * 0.08 }}
+                >
+                  <Link to={`/play/${game.id}`}>
+                    <Card
+                      variant="highlight"
+                      className={`group cursor-pointer hover:border-copper/40 transition-colors h-full relative ${isFeatured ? "overflow-hidden border-copper/30" : ""}`}
+                    >
+                      {isFeatured && (
+                        <div className="absolute top-3 right-3 z-10">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-copper/15 border border-copper/30 text-copper text-[10px] sm:text-xs font-heading font-bold uppercase tracking-wider">
+                            Today's Challenge
+                          </span>
+                        </div>
+                      )}
+                      <CardContent className={isFeatured ? "sm:p-8" : ""}>
+                        <div
+                          className={`w-12 h-12 rounded-xl bg-gradient-to-br ${game.color} flex items-center justify-center text-2xl mb-4 ${isFeatured ? "w-14 h-14 sm:w-16 sm:h-16 text-3xl sm:text-4xl" : ""}`}
+                        >
+                          {game.icon}
+                        </div>
+                        <CardTitle>{GAME_LABELS[game.id]}</CardTitle>
+                        <p className="text-sm text-text-muted mt-1">
+                          {GAME_DESCRIPTIONS[game.id]}
+                        </p>
+                        <div className="mt-4 flex items-center text-copper text-sm font-heading font-bold group-hover:gap-2 transition-all">
+                          Play Now →
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                </motion.div>
+              )
+            })}
           </div>
         </section>
 

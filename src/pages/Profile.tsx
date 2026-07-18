@@ -184,17 +184,27 @@ export function Profile() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
             <StatCard
               label="Total XP"
-              value={profile.total_xp.toLocaleString()}
-              trend={profile.total_xp > 0 ? "up" : "neutral"}
+              value={profile.total_xp}
+              icon="⚡"
+              iconBg="from-copper to-gold"
             />
             <StatCard
               label="Longest Streak"
               value={`${profile.longest_streak}d`}
+              icon="🔥"
+              iconBg="from-copper to-streak"
             />
-            <StatCard label="Level" value={level} />
+            <StatCard
+              label="Level"
+              value={level}
+              icon="🏆"
+              iconBg="from-gold to-copper"
+            />
             <StatCard
               label="Cosmetics"
               value={profile.unlocked_cosmetics?.length || 0}
+              icon="🎨"
+              iconBg="from-pitch-light to-pitch"
             />
           </div>
 

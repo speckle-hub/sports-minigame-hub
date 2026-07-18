@@ -109,9 +109,38 @@ export function Achievements() {
                     Complete challenges and reach milestones to earn badges
                   </p>
                 </div>
-                <span className="text-xs font-heading font-bold text-copper whitespace-nowrap">
-                  {unlockedCount} / {badges.length}
-                </span>
+                <div className="relative w-12 h-12 flex-shrink-0">
+                  <svg className="w-full h-full -rotate-90" viewBox="0 0 48 48">
+                    <circle
+                      cx="24" cy="24" r="20"
+                      fill="none"
+                      strokeWidth="4"
+                      className="stroke-surface-3"
+                    />
+                    <motion.circle
+                      cx="24" cy="24" r="20"
+                      fill="none"
+                      strokeWidth="4"
+                      strokeLinecap="round"
+                      className="stroke-copper"
+                      strokeDasharray={2 * Math.PI * 20}
+                      initial={{ strokeDashoffset: 2 * Math.PI * 20 }}
+                      animate={{
+                        strokeDashoffset:
+                          2 * Math.PI * 20 -
+                          (badges.length > 0
+                            ? (unlockedCount / badges.length) * 2 * Math.PI * 20
+                            : 0),
+                      }}
+                      transition={{ duration: 1, ease: "easeOut" }}
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-[10px] font-heading font-bold text-text-muted">
+                      {unlockedCount}/{badges.length}
+                    </span>
+                  </div>
+                </div>
               </CardHeader>
               <CardContent className="space-y-10">
                 {content.map((group) => (
@@ -155,9 +184,11 @@ export function Achievements() {
                                     <span>{Math.round((progress.current / progress.target) * 100)}%</span>
                                   </div>
                                   <div className="w-full h-1.5 rounded-full bg-surface-3 overflow-hidden">
-                                    <div
-                                      className="h-full rounded-full bg-copper transition-all duration-500"
-                                      style={{ width: `${(progress.current / progress.target) * 100}%` }}
+                                    <motion.div
+                                      className="h-full rounded-full bg-copper"
+                                      initial={{ width: 0 }}
+                                      animate={{ width: `${(progress.current / progress.target) * 100}%` }}
+                                      transition={{ type: "spring", stiffness: 80, damping: 20 }}
                                     />
                                   </div>
                                 </div>
